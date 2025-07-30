@@ -2,9 +2,17 @@
 package parser
 
 // Parser defines the parser itself.
-type Parser struct{}
+type Parser struct {
+	exp    string
+	expLen int
+	expIdx uint
+}
 
 // NewParser creates a new instance of the Parser struct.
-func NewParser() Parser {
-	return Parser{}
+func NewParser(exp string) Parser {
+	return Parser{
+		exp:    exp,
+		expLen: len(exp),
+		expIdx: 0,
+	}
 }

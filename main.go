@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	p := parser.NewParser()
-	err := p.Parse("1 + 1")
+	p := parser.NewParser("1 + 1")
+	err := p.Parse()
 
 	if err != nil {
 		slog.Error(err.Error())
