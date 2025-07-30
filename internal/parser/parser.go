@@ -9,8 +9,8 @@ type Parser struct {
 }
 
 // NewParser creates a new instance of the Parser struct.
-func NewParser(exp string) Parser {
-	return Parser{
+func NewParser(exp string) *Parser {
+	return &Parser{
 		exp:    exp,
 		expLen: len(exp),
 		expIdx: 0,
