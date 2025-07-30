@@ -6,6 +6,7 @@ type Parser struct {
 	exp    string
 	expLen int
 	expIdx uint
+	isEOF  bool
 }
 
 // NewParser creates a new instance of the Parser struct.
