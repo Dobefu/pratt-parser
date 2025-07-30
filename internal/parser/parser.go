@@ -15,5 +15,6 @@ func NewParser(exp string) *Parser {
 		exp:    exp,
 		expLen: len(exp),
 		expIdx: 0,
+		isEOF:  false,
 	}
 }

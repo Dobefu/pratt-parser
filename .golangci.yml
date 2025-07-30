@@ -1,0 +1,15 @@
+version: "2"
+linters:
+  enable:
+    - errcheck
+    - gocyclo
+    - gosec
+    - govet
+    - ineffassign
+    - revive
+    - staticcheck
+    - unused
+    - exhaustive
+    - exhaustruct
+    - forbidigo
+    - nlreturn
