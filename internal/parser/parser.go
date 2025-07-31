@@ -5,7 +5,7 @@ package parser
 type Parser struct {
 	exp    string
 	expLen int
-	expIdx uint
+	expIdx int
 	isEOF  bool
 }
 
