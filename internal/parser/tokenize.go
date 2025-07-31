@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/Dobefu/pratt-parser/internal/token"
@@ -15,6 +16,25 @@ func (p *Parser) Tokenize() ([]token.Token, error) {
 
 		if err != nil {
 			return tokens, err
+		}
+
+		switch next {
+		// Whitespace characters.
+		case ' ', '\r', '\t':
+			continue
+
+		// Numeric characters.
+		case '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			newToken, err := p.parseNumber(next)
+
+			if err != nil {
+				return nil, err
+			}
+
+			tokens = append(tokens, *newToken)
+
+		default:
+			return tokens, fmt.Errorf("unexpected character %s", string(next))
 		}
 
 		slog.Info(string(next))
