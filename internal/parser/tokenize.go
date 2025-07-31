@@ -33,6 +33,42 @@ func (p *Parser) Tokenize() ([]token.Token, error) {
 
 			tokens = append(tokens, *newToken)
 
+		case '+':
+			tokens = append(tokens, token.Token{
+				Atom:      string(next),
+				TokenType: token.TokenTypeOperationAdd,
+			})
+
+		case '-':
+			tokens = append(tokens, token.Token{
+				Atom:      string(next),
+				TokenType: token.TokenTypeOperationSub,
+			})
+
+		case '*':
+			tokens = append(tokens, token.Token{
+				Atom:      string(next),
+				TokenType: token.TokenTypeOperationMul,
+			})
+
+		case '/':
+			tokens = append(tokens, token.Token{
+				Atom:      string(next),
+				TokenType: token.TokenTypeOperationDiv,
+			})
+
+		case '(':
+			tokens = append(tokens, token.Token{
+				Atom:      string(next),
+				TokenType: token.TokenTypeLParen,
+			})
+
+		case ')':
+			tokens = append(tokens, token.Token{
+				Atom:      string(next),
+				TokenType: token.TokenTypeRParen,
+			})
+
 		default:
 			return tokens, fmt.Errorf("unexpected character %s", string(next))
 		}
