@@ -2,14 +2,18 @@ version: "2"
 linters:
   enable:
     - errcheck
-    - gocyclo
-    - gosec
-    - govet
-    - ineffassign
-    - revive
-    - staticcheck
-    - unused
     - exhaustive
     - exhaustruct
     - forbidigo
+    - gocyclo
+    - godot
+    - gosec
+    - govet
+    - ineffassign
+    - misspell
     - nlreturn
+    - paralleltest
+    - revive
+    - sloglint
+    - staticcheck
+    - unused
