@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"log/slog"
 
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
@@ -72,8 +71,6 @@ func (p *Parser) Tokenize() ([]token.Token, error) {
 		default:
 			return tokens, fmt.Errorf("unexpected character %s", string(next))
 		}
-
-		slog.Info(string(next))
 	}
 
 	return tokens, nil
