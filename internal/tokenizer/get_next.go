@@ -1,6 +1,8 @@
 package tokenizer
 
-import "errors"
+import (
+	"errors"
+)
 
 // GetNext gets the next byte in the expression.
 func (t *Tokenizer) GetNext() (byte, error) {

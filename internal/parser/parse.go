@@ -9,6 +9,15 @@ func (p *Parser) Parse() error {
 	}
 
 	p.tokens = tokens
+	p.tokenLen = len(tokens)
+
+	for !p.isEOF {
+		_, err := p.GetNextToken()
+
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

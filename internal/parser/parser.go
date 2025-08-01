@@ -11,6 +11,8 @@ type Parser struct {
 	tokenizer *tokenizer.Tokenizer
 	tokens    []token.Token
 	tokenIdx  int
+	tokenLen  int
+	isEOF     bool
 }
 
 // NewParser creates a new instance of the Parser struct.
@@ -19,5 +21,7 @@ func NewParser(exp string) *Parser {
 		tokenizer: tokenizer.NewTokenizer(exp),
 		tokens:    []token.Token{},
 		tokenIdx:  0,
+		tokenLen:  0,
+		isEOF:     false,
 	}
 }
