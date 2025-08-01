@@ -1,4 +1,4 @@
-package parser
+package tokenizer
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-func (p *Parser) parseNumber(current byte) (*token.Token, error) {
+func (t *Tokenizer) parseNumber(current byte) (*token.Token, error) {
 	var number strings.Builder
 	number.WriteByte(current)
 
@@ -16,8 +16,8 @@ func (p *Parser) parseNumber(current byte) (*token.Token, error) {
 	isFloat := current == '.'
 
 GETNEXT:
-	for !p.IsEOF() {
-		next, err := p.Peek()
+	for !t.isEOF {
+		next, err := t.GetNext()
 
 		if err != nil {
 			return nil, err
@@ -25,7 +25,7 @@ GETNEXT:
 
 		switch next {
 		case '_':
-			p.expIdx++
+			t.expIdx++
 
 			continue GETNEXT
 
@@ -46,7 +46,7 @@ GETNEXT:
 
 		lastByte = next
 
-		p.expIdx++
+		t.expIdx++
 	}
 
 	if lastByte == '.' || !isNumberValid {

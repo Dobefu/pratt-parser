@@ -12,7 +12,7 @@ const (
 	TokenTypeOperationMul
 	// TokenTypeOperationDiv represents the division operation.
 	TokenTypeOperationDiv
-	// TokenTypeNumber represents a numeric literal.
+	// TokenTypeNumber represents a number literal.
 	TokenTypeNumber
 	// TokenTypeIdentifier represents an identifier.
 	TokenTypeIdentifier

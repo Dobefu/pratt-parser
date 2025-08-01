@@ -1,4 +1,4 @@
-package parser
+package tokenizer
 
 import (
 	"fmt"
@@ -7,11 +7,11 @@ import (
 )
 
 // Tokenize analyzes the expression string and turns it into tokens.
-func (p *Parser) Tokenize() ([]token.Token, error) {
+func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 	var tokens []token.Token
 
-	for !p.IsEOF() {
-		next, err := p.GetNext()
+	for !t.isEOF {
+		next, err := t.GetNext()
 
 		if err != nil {
 			return tokens, err
@@ -24,7 +24,7 @@ func (p *Parser) Tokenize() ([]token.Token, error) {
 
 		// Numeric characters.
 		case '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-			newToken, err := p.parseNumber(next)
+			newToken, err := t.parseNumber(next)
 
 			if err != nil {
 				return nil, err
