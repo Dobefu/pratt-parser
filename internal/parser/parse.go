@@ -15,6 +15,7 @@ func (p *Parser) Parse() error {
 
 	p.tokens = tokens
 	p.tokenLen = len(tokens)
+	p.isEOF = len(tokens) <= 0
 
 	if len(tokens) == 0 {
 		return fmt.Errorf("no tokens to parse")

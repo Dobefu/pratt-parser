@@ -34,37 +34,37 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 
 		case '+':
 			tokens = append(tokens, token.Token{
-				Atom:      string(next),
+				Atom:      "+",
 				TokenType: token.TokenTypeOperationAdd,
 			})
 
 		case '-':
 			tokens = append(tokens, token.Token{
-				Atom:      string(next),
+				Atom:      "-",
 				TokenType: token.TokenTypeOperationSub,
 			})
 
 		case '*':
 			tokens = append(tokens, token.Token{
-				Atom:      string(next),
+				Atom:      "*",
 				TokenType: token.TokenTypeOperationMul,
 			})
 
 		case '/':
 			tokens = append(tokens, token.Token{
-				Atom:      string(next),
+				Atom:      "/",
 				TokenType: token.TokenTypeOperationDiv,
 			})
 
 		case '(':
 			tokens = append(tokens, token.Token{
-				Atom:      string(next),
+				Atom:      "(",
 				TokenType: token.TokenTypeLParen,
 			})
 
 		case ')':
 			tokens = append(tokens, token.Token{
-				Atom:      string(next),
+				Atom:      ")",
 				TokenType: token.TokenTypeRParen,
 			})
 
