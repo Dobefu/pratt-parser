@@ -1,11 +1,13 @@
 package tokenizer
 
-import "testing"
+import (
+	"testing"
+)
 
 func BenchmarkParseNumber(b *testing.B) {
-	t := NewTokenizer("1 + -2 * 3 / 4")
-
 	for b.Loop() {
+		t := NewTokenizer("1 + -2 * 3 / 4")
+
 		_, _ = t.parseNumber('1')
 	}
 }

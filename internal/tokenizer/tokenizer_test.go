@@ -1,6 +1,8 @@
 package tokenizer
 
-import "testing"
+import (
+	"testing"
+)
 
 func BenchmarkTokenizer(b *testing.B) {
 	for b.Loop() {
