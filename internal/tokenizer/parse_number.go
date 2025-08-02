@@ -17,7 +17,7 @@ func (t *Tokenizer) parseNumber(current byte) (*token.Token, error) {
 
 GETNEXT:
 	for !t.isEOF {
-		next, err := t.GetNext()
+		next, err := t.Peek()
 
 		if err != nil {
 			return nil, err
@@ -25,6 +25,18 @@ GETNEXT:
 
 		switch next {
 		case '_':
+			if lastByte == '_' {
+				return nil, fmt.Errorf("invalid number %s", number.String()+"_")
+			}
+
+			_, err = t.GetNext()
+
+			if err != nil {
+				return nil, err
+			}
+
+			lastByte = next
+
 			continue GETNEXT
 
 		case '.':
@@ -32,26 +44,32 @@ GETNEXT:
 				isNumberValid = false
 			}
 
+			_, err = t.GetNext()
+
+			if err != nil {
+				return nil, err
+			}
+
 			number.WriteByte(next)
 			isFloat = true
 
 		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			_, err = t.GetNext()
+
+			if err != nil {
+				return nil, err
+			}
+
 			number.WriteByte(next)
 
 		default:
-			t.expIdx--
-
-			if t.expIdx < t.expLen {
-				t.isEOF = false
-			}
-
 			break GETNEXT
 		}
 
 		lastByte = next
 	}
 
-	if lastByte == '.' || !isNumberValid {
+	if lastByte == '.' || lastByte == '_' || !isNumberValid {
 		return nil, fmt.Errorf("invalid number %s", number.String())
 	}
 
