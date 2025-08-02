@@ -16,13 +16,7 @@ func (p *Parser) parseBinaryExpr(
 		return nil, fmt.Errorf("unexpected token %s", operatorToken.Atom)
 	}
 
-	nextToken, err := p.PeekNextToken()
-
-	if err != nil {
-		return nil, err
-	}
-
-	nextNumberLiteral, err := p.parseExpr(nextToken, leftExpr, recursionDepth+1)
+	nextNumberLiteral, err := p.parseExpr(operatorToken, leftExpr, recursionDepth+1)
 
 	if err != nil {
 		return nil, err

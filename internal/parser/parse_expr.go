@@ -19,6 +19,16 @@ func (p *Parser) parseExpr(
 		return nil, errors.New("maximum recursion depth reached")
 	}
 
+	if p.isEOF {
+		return leftExpr, nil
+	}
+
+	nextToken, err := p.PeekNextToken()
+
+	if err != nil {
+		return nil, err
+	}
+
 	switch currentToken.TokenType {
 	case
 		token.TokenTypeNumber:
@@ -28,28 +38,60 @@ func (p *Parser) parseExpr(
 			return nil, err
 		}
 
-		return expr, err
-
-	case
-		token.TokenTypeOperationAdd,
-		token.TokenTypeOperationSub,
-		token.TokenTypeOperationMul,
-		token.TokenTypeOperationDiv:
-		nextToken, err := p.PeekNextToken()
+		_, err = p.GetNextToken()
 
 		if err != nil {
 			return nil, err
 		}
 
+		return p.parseExpr(nextToken, expr, recursionDepth+1)
+
+	case
+		token.TokenTypeOperationAdd,
+		token.TokenTypeOperationSub:
+		if leftExpr == nil {
+			_, err = p.GetNextToken()
+
+			if err != nil {
+				return nil, err
+			}
+
+			return p.parsePrefixExpr(nextToken, recursionDepth)
+		}
+
+		fallthrough
+
+	case
+		token.TokenTypeOperationMul,
+		token.TokenTypeOperationDiv:
+
 		if p.getBindingPower(currentToken) < p.getBindingPower(nextToken) {
+			_, err = p.GetNextToken()
+
+			if err != nil {
+				return nil, err
+			}
+
 			return p.parseExpr(nextToken, leftExpr, recursionDepth+1)
 		}
 
-		return p.parseBinaryExpr(currentToken, leftExpr, recursionDepth)
+		_, err = p.GetNextToken()
+
+		if err != nil {
+			return nil, err
+		}
+
+		return p.parseBinaryExpr(nextToken, leftExpr, recursionDepth)
 
 	case
 		token.TokenTypeLParen:
-		return p.parseExpr(currentToken, leftExpr, recursionDepth+1)
+		_, err = p.GetNextToken()
+
+		if err != nil {
+			return nil, err
+		}
+
+		return p.parseExpr(nextToken, leftExpr, recursionDepth+1)
 
 	default:
 		return nil, fmt.Errorf("unexpected token: %s", currentToken.Atom)

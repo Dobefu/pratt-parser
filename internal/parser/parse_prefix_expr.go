@@ -5,8 +5,17 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-func (p *Parser) parsePrefixExpr(currentToken *token.Token) (ast.ExprNode, error) {
-	currentNumberLiteral, err := p.parseNumberLiteral(currentToken)
+func (p *Parser) parsePrefixExpr(
+	currentToken *token.Token,
+	recursionDepth int,
+) (ast.ExprNode, error) {
+	nextToken, err := p.GetNextToken()
+
+	if err != nil {
+		return nil, err
+	}
+
+	expr, err := p.parseExpr(nextToken, nil, recursionDepth+1)
 
 	if err != nil {
 		return nil, err
@@ -14,6 +23,6 @@ func (p *Parser) parsePrefixExpr(currentToken *token.Token) (ast.ExprNode, error
 
 	return &ast.PrefixExpr{
 		Operator: *currentToken,
-		Operand:  currentNumberLiteral,
+		Operand:  expr,
 	}, nil
 }

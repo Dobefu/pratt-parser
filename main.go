@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	p := parser.NewParser("1 + 1")
+	p := parser.NewParser("1 + -2 * 3")
 	err := p.Parse()
 
 	if err != nil {
