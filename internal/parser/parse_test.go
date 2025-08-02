@@ -5,6 +5,8 @@ import (
 )
 
 func TestParse(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		input    string
 		expected string
@@ -41,6 +43,7 @@ func TestParse(t *testing.T) {
 
 		if err != nil {
 			t.Errorf("expected no error, got %v", err)
+
 			continue
 		}
 

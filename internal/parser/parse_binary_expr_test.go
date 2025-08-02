@@ -12,6 +12,7 @@ func BenchmarkParseBinaryExpr(b *testing.B) {
 
 		_, _ = p.parseBinaryExpr(
 			&token.Token{
+				Atom:      "1",
 				TokenType: token.TokenTypeOperationAdd,
 			},
 			nil,
