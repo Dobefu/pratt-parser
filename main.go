@@ -9,7 +9,12 @@ import (
 )
 
 func main() {
-	p := parser.NewParser("1 + -2 * 3")
+	if len(os.Args) <= 1 {
+		slog.Error("Usage: go run main.go <expression>")
+		os.Exit(1)
+	}
+
+	p := parser.NewParser(os.Args[1])
 	ast, err := p.Parse()
 
 	slog.Info(ast.Expr())
