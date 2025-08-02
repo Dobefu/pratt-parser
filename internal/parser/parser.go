@@ -24,7 +24,7 @@ func NewParser(exp string) *Parser {
 		tokens:    []token.Token{},
 		tokenIdx:  0,
 		tokenLen:  0,
-		isEOF:     false,
+		isEOF:     len(exp) <= 0,
 		ast:       nil,
 	}
 }

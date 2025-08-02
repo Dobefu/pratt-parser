@@ -15,6 +15,6 @@ func NewTokenizer(exp string) *Tokenizer {
 		exp:    exp,
 		expLen: len(exp),
 		expIdx: 0,
-		isEOF:  false,
+		isEOF:  len(exp) <= 0,
 	}
 }
