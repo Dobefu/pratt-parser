@@ -5,7 +5,7 @@ import (
 )
 
 // getBindingPower returns the binding power of the current token.
-func (p *Parser) getBindingPower(currentToken *token.Token) int {
+func (p *Parser) getBindingPower(currentToken *token.Token, isUnary bool) int {
 	switch currentToken.TokenType {
 	case token.TokenTypeLParen, token.TokenTypeRParen:
 		return 1000
@@ -14,6 +14,11 @@ func (p *Parser) getBindingPower(currentToken *token.Token) int {
 		return 200
 
 	case token.TokenTypeOperationAdd, token.TokenTypeOperationSub:
+
+		if isUnary {
+			return 300
+		}
+
 		return 100
 
 	default:

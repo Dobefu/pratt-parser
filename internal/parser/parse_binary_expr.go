@@ -10,23 +10,27 @@ import (
 func (p *Parser) parseBinaryExpr(
 	operatorToken *token.Token,
 	leftExpr ast.ExprNode,
+	rightToken *token.Token,
 	recursionDepth int,
 ) (ast.ExprNode, error) {
 	if leftExpr == nil {
 		return nil, fmt.Errorf("unexpected token %s", operatorToken.Atom)
 	}
 
-	nextNumberLiteral, err := p.parseExpr(operatorToken, leftExpr, recursionDepth+1)
+	rightExpr, err := p.parseExpr(
+		rightToken,
+		nil,
+		p.getBindingPower(operatorToken, false)+1,
+		recursionDepth+1,
+	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	expr := &ast.BinaryExpr{
+	return &ast.BinaryExpr{
 		Left:     leftExpr,
-		Right:    nextNumberLiteral,
+		Right:    rightExpr,
 		Operator: *operatorToken,
-	}
-
-	return expr, nil
+	}, nil
 }

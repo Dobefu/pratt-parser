@@ -2,6 +2,7 @@
 package parser
 
 import (
+	"github.com/Dobefu/pratt-parser/internal/ast"
 	"github.com/Dobefu/pratt-parser/internal/token"
 	"github.com/Dobefu/pratt-parser/internal/tokenizer"
 )
@@ -13,6 +14,7 @@ type Parser struct {
 	tokenIdx  int
 	tokenLen  int
 	isEOF     bool
+	ast       ast.ExprNode
 }
 
 // NewParser creates a new instance of the Parser struct.
@@ -23,5 +25,6 @@ func NewParser(exp string) *Parser {
 		tokenIdx:  0,
 		tokenLen:  0,
 		isEOF:     false,
+		ast:       nil,
 	}
 }

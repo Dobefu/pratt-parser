@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
@@ -13,10 +12,21 @@ const maxRecursionDepth = 1000
 func (p *Parser) parseExpr(
 	currentToken *token.Token,
 	leftExpr ast.ExprNode,
+	minPrecedence int,
 	recursionDepth int,
 ) (ast.ExprNode, error) {
 	if recursionDepth > maxRecursionDepth {
-		return nil, errors.New("maximum recursion depth reached")
+		return nil, fmt.Errorf("maximum recursion depth of (%d) exceeded", maxRecursionDepth)
+	}
+
+	if leftExpr == nil {
+		var err error
+
+		leftExpr, err = p.parsePrefixExpr(currentToken, recursionDepth)
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if p.isEOF {
@@ -29,71 +39,38 @@ func (p *Parser) parseExpr(
 		return nil, err
 	}
 
-	switch currentToken.TokenType {
-	case
-		token.TokenTypeNumber:
-		expr, err := p.parseNumberLiteral(currentToken)
-
-		if err != nil {
-			return nil, err
-		}
-
-		_, err = p.GetNextToken()
-
-		if err != nil {
-			return nil, err
-		}
-
-		return p.parseExpr(nextToken, expr, recursionDepth+1)
-
+	switch nextToken.TokenType {
 	case
 		token.TokenTypeOperationAdd,
-		token.TokenTypeOperationSub:
-		if leftExpr == nil {
-			_, err = p.GetNextToken()
-
-			if err != nil {
-				return nil, err
-			}
-
-			return p.parsePrefixExpr(nextToken, recursionDepth)
-		}
-
-		fallthrough
-
-	case
+		token.TokenTypeOperationSub,
 		token.TokenTypeOperationMul,
 		token.TokenTypeOperationDiv:
 
-		if p.getBindingPower(currentToken) < p.getBindingPower(nextToken) {
-			_, err = p.GetNextToken()
-
-			if err != nil {
-				return nil, err
-			}
-
-			return p.parseExpr(nextToken, leftExpr, recursionDepth+1)
+		if p.getBindingPower(nextToken, false) < minPrecedence {
+			return leftExpr, nil
 		}
 
-		_, err = p.GetNextToken()
+		operator, err := p.GetNextToken()
 
 		if err != nil {
 			return nil, err
 		}
 
-		return p.parseBinaryExpr(nextToken, leftExpr, recursionDepth)
-
-	case
-		token.TokenTypeLParen:
-		_, err = p.GetNextToken()
+		rightToken, err := p.GetNextToken()
 
 		if err != nil {
 			return nil, err
 		}
 
-		return p.parseExpr(nextToken, leftExpr, recursionDepth+1)
+		expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return p.parseExpr(nil, expr, minPrecedence, recursionDepth+1)
 
 	default:
-		return nil, fmt.Errorf("unexpected token: %s", currentToken.Atom)
+		return leftExpr, nil
 	}
 }

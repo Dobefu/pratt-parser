@@ -25,8 +25,6 @@ GETNEXT:
 
 		switch next {
 		case '_':
-			t.expIdx++
-
 			continue GETNEXT
 
 		case '.':
@@ -41,12 +39,16 @@ GETNEXT:
 			number.WriteByte(next)
 
 		default:
+			t.expIdx--
+
+			if t.expIdx < t.expLen {
+				t.isEOF = false
+			}
+
 			break GETNEXT
 		}
 
 		lastByte = next
-
-		t.expIdx++
 	}
 
 	if lastByte == '.' || !isNumberValid {

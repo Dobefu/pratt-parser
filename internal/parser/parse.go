@@ -1,6 +1,9 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+	"log/slog"
+)
 
 // Parse parses the expression string supplied in the struct.
 func (p *Parser) Parse() error {
@@ -13,19 +16,27 @@ func (p *Parser) Parse() error {
 	p.tokens = tokens
 	p.tokenLen = len(tokens)
 
+	if len(tokens) == 0 {
+		return fmt.Errorf("no tokens to parse")
+	}
+
 	nextToken, err := p.GetNextToken()
 
 	if err != nil {
 		return err
 	}
 
-	ast, err := p.parseExpr(nextToken, nil, 0)
+	ast, err := p.parseExpr(nextToken, nil, 0, 0)
 
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(ast.Expr())
+	p.ast = ast
+
+	if ast != nil {
+		slog.Info(ast.Expr())
+	}
 
 	return nil
 }
