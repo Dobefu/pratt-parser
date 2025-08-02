@@ -7,7 +7,7 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-func (t *Tokenizer) parseNumber(current byte) (*token.Token, error) {
+func (t *Tokenizer) parseNumber(current byte) (token.Token, error) {
 	var number strings.Builder
 	number.WriteByte(current)
 
@@ -20,19 +20,19 @@ GETNEXT:
 		next, err := t.Peek()
 
 		if err != nil {
-			return nil, err
+			return token.Token{}, err
 		}
 
 		switch next {
 		case '_':
 			if lastByte == '_' {
-				return nil, fmt.Errorf("invalid number %s", number.String()+"_")
+				return token.Token{}, fmt.Errorf("invalid number %s", number.String()+"_")
 			}
 
 			_, err = t.GetNext()
 
 			if err != nil {
-				return nil, err
+				return token.Token{}, err
 			}
 
 			lastByte = next
@@ -47,7 +47,7 @@ GETNEXT:
 			_, err = t.GetNext()
 
 			if err != nil {
-				return nil, err
+				return token.Token{}, err
 			}
 
 			number.WriteByte(next)
@@ -57,7 +57,7 @@ GETNEXT:
 			_, err = t.GetNext()
 
 			if err != nil {
-				return nil, err
+				return token.Token{}, err
 			}
 
 			number.WriteByte(next)
@@ -70,10 +70,10 @@ GETNEXT:
 	}
 
 	if lastByte == '.' || lastByte == '_' || !isNumberValid {
-		return nil, fmt.Errorf("invalid number %s", number.String())
+		return token.Token{}, fmt.Errorf("invalid number %s", number.String())
 	}
 
-	return &token.Token{
+	return token.Token{
 		Atom:      number.String(),
 		TokenType: token.TokenTypeNumber,
 	}, nil
