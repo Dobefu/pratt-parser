@@ -22,7 +22,7 @@ func (p *Parser) parseExpr(
 	if leftExpr == nil {
 		var err error
 
-		leftExpr, err = p.parsePrefixExpr(currentToken, recursionDepth)
+		leftExpr, err = p.parsePrefixExpr(currentToken, recursionDepth+1)
 
 		if err != nil {
 			return nil, err
@@ -62,7 +62,7 @@ func (p *Parser) parseExpr(
 			return nil, err
 		}
 
-		expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth)
+		expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth+1)
 
 		if err != nil {
 			return nil, err
