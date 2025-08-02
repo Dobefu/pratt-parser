@@ -1,6 +1,8 @@
 package ast
 
 import (
+	"fmt"
+
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -12,6 +14,6 @@ type BinaryExpr struct {
 }
 
 // Expr returns the expression of the binary expression.
-func (e *BinaryExpr) Expr() {
-	// TODO
+func (e *BinaryExpr) Expr() string {
+	return fmt.Sprintf("(%s %s %s)", e.Left.Expr(), e.Operator.Atom, e.Right.Expr())
 }

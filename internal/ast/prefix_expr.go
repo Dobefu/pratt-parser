@@ -1,6 +1,8 @@
 package ast
 
 import (
+	"fmt"
+
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -11,6 +13,6 @@ type PrefixExpr struct {
 }
 
 // Expr returns the expression of the prefix expression.
-func (e *PrefixExpr) Expr() {
-	// TODO
+func (e *PrefixExpr) Expr() string {
+	return fmt.Sprintf("(%s %s)", e.Operator.Atom, e.Operand.Expr())
 }

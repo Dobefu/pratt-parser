@@ -6,6 +6,6 @@ type NumberLiteral struct {
 }
 
 // Expr returns the expression of the number literal.
-func (e *NumberLiteral) Expr() {
-	// TODO
+func (e *NumberLiteral) Expr() string {
+	return e.Value
 }

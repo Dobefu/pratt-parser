@@ -25,7 +25,7 @@ func (p *Parser) Parse() error {
 		return err
 	}
 
-	fmt.Println(ast)
+	fmt.Println(ast.Expr())
 
 	return nil
 }
