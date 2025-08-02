@@ -20,6 +20,10 @@ func TestParse(t *testing.T) {
 			expected: "(1 + 2)",
 		},
 		{
+			input:    "1 ** 1",
+			expected: "(1 ** 1)",
+		},
+		{
 			input:    "1 + 2 * 3",
 			expected: "(1 + (2 * 3))",
 		},
