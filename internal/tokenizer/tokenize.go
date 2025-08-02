@@ -89,7 +89,11 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 			})
 
 		default:
-			return tokens, fmt.Errorf("unexpected character %s", string(next))
+			return tokens, fmt.Errorf(
+				"unexpected character %s at index %d",
+				string(next),
+				t.expIdx,
+			)
 		}
 	}
 
