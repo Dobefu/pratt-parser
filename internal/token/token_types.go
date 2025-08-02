@@ -20,6 +20,4 @@ const (
 	TokenTypeLParen
 	// TokenTypeRParen represents a right parenthesis.
 	TokenTypeRParen
-	// TokenTypeEOF represents end of a file.
-	TokenTypeEOF
 )
