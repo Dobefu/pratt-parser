@@ -2,15 +2,16 @@ package parser
 
 import (
 	"fmt"
-	"log/slog"
+
+	"github.com/Dobefu/pratt-parser/internal/ast"
 )
 
 // Parse parses the expression string supplied in the struct.
-func (p *Parser) Parse() error {
+func (p *Parser) Parse() (ast.ExprNode, error) {
 	tokens, err := p.tokenizer.Tokenize()
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	p.tokens = tokens
@@ -18,26 +19,22 @@ func (p *Parser) Parse() error {
 	p.isEOF = len(tokens) <= 0
 
 	if len(tokens) == 0 {
-		return fmt.Errorf("no tokens to parse")
+		return nil, fmt.Errorf("no tokens to parse")
 	}
 
 	nextToken, err := p.GetNextToken()
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	ast, err := p.parseExpr(nextToken, nil, 0, 0)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	p.ast = ast
 
-	if ast != nil {
-		slog.Info(ast.Expr())
-	}
-
-	return nil
+	return ast, nil
 }

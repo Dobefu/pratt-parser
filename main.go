@@ -10,7 +10,9 @@ import (
 
 func main() {
 	p := parser.NewParser("1 + -2 * 3")
-	err := p.Parse()
+	ast, err := p.Parse()
+
+	slog.Info(ast.Expr())
 
 	if err != nil {
 		slog.Error(err.Error())
