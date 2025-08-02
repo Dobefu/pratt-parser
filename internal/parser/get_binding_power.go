@@ -10,6 +10,9 @@ func (p *Parser) getBindingPower(currentToken *token.Token, isUnary bool) int {
 	case token.TokenTypeLParen, token.TokenTypeRParen:
 		return 1000
 
+	case token.TokenTypeOperationPow:
+		return 400
+
 	case token.TokenTypeOperationMul, token.TokenTypeOperationDiv:
 		return 200
 

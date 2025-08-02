@@ -46,10 +46,29 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 			})
 
 		case '*':
-			tokens = append(tokens, token.Token{
-				Atom:      "*",
-				TokenType: token.TokenTypeOperationMul,
-			})
+			nextChar, err := t.Peek()
+
+			if err != nil {
+				return nil, err
+			}
+
+			if nextChar == '*' {
+				_, err = t.GetNext()
+
+				if err != nil {
+					return nil, err
+				}
+
+				tokens = append(tokens, token.Token{
+					Atom:      "**",
+					TokenType: token.TokenTypeOperationPow,
+				})
+			} else {
+				tokens = append(tokens, token.Token{
+					Atom:      "*",
+					TokenType: token.TokenTypeOperationMul,
+				})
+			}
 
 		case '/':
 			tokens = append(tokens, token.Token{

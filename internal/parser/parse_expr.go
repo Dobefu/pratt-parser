@@ -70,6 +70,27 @@ func (p *Parser) parseExpr(
 
 		return p.parseExpr(nil, expr, minPrecedence, recursionDepth+1)
 
+	case token.TokenTypeOperationPow:
+		operator, err := p.GetNextToken()
+
+		if err != nil {
+			return nil, err
+		}
+
+		rightToken, err := p.GetNextToken()
+
+		if err != nil {
+			return nil, err
+		}
+
+		expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth+1)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return p.parseExpr(nil, expr, minPrecedence-1, recursionDepth+1)
+
 	default:
 		return leftExpr, nil
 	}
