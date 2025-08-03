@@ -63,6 +63,15 @@ func (e *Evaluator) evaluateFunctionCall(fc *ast.FunctionCall) (float64, error) 
 
 		return math.Round(argValues[0]), nil
 
+	case "ceil":
+		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
+
+		if err != nil {
+			return 0, err
+		}
+
+		return math.Ceil(argValues[0]), nil
+
 	default:
 		return 0, fmt.Errorf("undefined function: %s", fc.FunctionName)
 	}
