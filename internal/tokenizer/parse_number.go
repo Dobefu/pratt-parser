@@ -17,10 +17,6 @@ const (
 	NumberFlagExponent
 )
 
-const (
-	errMsgGeneric = "invalid number %s"
-)
-
 func (t *Tokenizer) parseNumber(current byte) (token.Token, error) {
 	errMsg := ""
 
@@ -103,7 +99,7 @@ GETNEXT:
 	}
 
 	if !isLastByteValid(lastByte) {
-		errMsg = errMsgGeneric
+		errMsg = "trailing character in number %s"
 	}
 
 	if errMsg != "" {
@@ -190,7 +186,7 @@ func (t *Tokenizer) handleAdditionAndSubtraction(
 	}
 
 	if lastByte == '+' || lastByte == '-' {
-		return errMsgGeneric, true
+		return "multiple addition or subtraction signs in exponent %s", true
 	}
 
 	*isNumberValid = false
