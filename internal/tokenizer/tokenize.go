@@ -8,7 +8,7 @@ import (
 
 // Tokenize analyzes the expression string and turns it into tokens.
 func (t *Tokenizer) Tokenize() ([]token.Token, error) {
-	approxNumTokens := (t.expLen / 2) + 1
+	approxNumTokens := (t.expLen / 3)
 	tokens := make([]token.Token, 0, approxNumTokens)
 
 	for !t.isEOF {
