@@ -148,6 +148,8 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
 
 			continue
 		}
+
+		break
 	}
 
 	return token.Token{
