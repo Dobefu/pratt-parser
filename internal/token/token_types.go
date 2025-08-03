@@ -14,6 +14,8 @@ const (
 	TokenTypeOperationDiv
 	// TokenTypeOperationPow represents the power operation.
 	TokenTypeOperationPow
+	// TokenTypeOperationMod represents the modulo operation.
+	TokenTypeOperationMod
 	// TokenTypeNumber represents a number literal.
 	TokenTypeNumber
 	// TokenTypeIdentifier represents an identifier.

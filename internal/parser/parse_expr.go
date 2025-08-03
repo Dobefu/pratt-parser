@@ -44,7 +44,8 @@ func (p *Parser) parseExpr(
 		token.TokenTypeOperationAdd,
 		token.TokenTypeOperationSub,
 		token.TokenTypeOperationMul,
-		token.TokenTypeOperationDiv:
+		token.TokenTypeOperationDiv,
+		token.TokenTypeOperationMod:
 
 		if p.getBindingPower(nextToken, false) < minPrecedence {
 			return leftExpr, nil

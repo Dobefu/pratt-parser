@@ -70,6 +70,12 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 				})
 			}
 
+		case '%':
+			tokens = append(tokens, token.Token{
+				Atom:      "%",
+				TokenType: token.TokenTypeOperationMod,
+			})
+
 		case '/':
 			tokens = append(tokens, token.Token{
 				Atom:      "/",
