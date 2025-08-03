@@ -15,6 +15,48 @@ func TestTokenize(t *testing.T) {
 		expected []token.Token
 	}{
 		{
+			input: "1",
+			expected: []token.Token{
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1e0",
+			expected: []token.Token{
+				{Atom: "1e0", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1e6",
+			expected: []token.Token{
+				{Atom: "1e6", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1e+6",
+			expected: []token.Token{
+				{Atom: "1e6", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1E6",
+			expected: []token.Token{
+				{Atom: "1E6", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1e-6",
+			expected: []token.Token{
+				{Atom: "1e-6", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1.2e6",
+			expected: []token.Token{
+				{Atom: "1.2e6", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
 			input: "1 + 1",
 			expected: []token.Token{
 				{Atom: "1", TokenType: token.TokenTypeNumber},
@@ -92,6 +134,21 @@ func TestTokenizeErr(t *testing.T) {
 	tests := []struct {
 		input string
 	}{
+		{
+			input: "1e",
+		},
+		{
+			input: "1e-",
+		},
+		{
+			input: "1e-r",
+		},
+		{
+			input: "1e6e6",
+		},
+		{
+			input: "1e6er",
+		},
 		{
 			input: "💔",
 		},
