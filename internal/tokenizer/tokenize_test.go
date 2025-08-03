@@ -38,16 +38,8 @@ func TestTokenize(t *testing.T) {
 			expected: []token.Token{tokenizeTestGetNumberToken("1e6")},
 		},
 		{
-			input:    "1E7",
-			expected: []token.Token{tokenizeTestGetNumberToken("1E7")},
-		},
-		{
-			input:    "1e-8",
-			expected: []token.Token{tokenizeTestGetNumberToken("1e-8")},
-		},
-		{
-			input:    "1.2e9",
-			expected: []token.Token{tokenizeTestGetNumberToken("1.2e9")},
+			input:    "1.2E-8",
+			expected: []token.Token{tokenizeTestGetNumberToken("1.2E-8")},
 		},
 		{
 			input: "1 + 1",
