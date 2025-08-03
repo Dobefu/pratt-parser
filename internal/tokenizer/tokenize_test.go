@@ -7,6 +7,13 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
+func tokenizeTestGetNumberToken(atom string) token.Token {
+	return token.Token{
+		Atom:      atom,
+		TokenType: token.TokenTypeNumber,
+	}
+}
+
 func TestTokenize(t *testing.T) {
 	t.Parallel()
 
@@ -17,67 +24,67 @@ func TestTokenize(t *testing.T) {
 		{
 			input: "1",
 			expected: []token.Token{
-				{Atom: "1", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1"),
 			},
 		},
 		{
 			input: "1e0",
 			expected: []token.Token{
-				{Atom: "1e0", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1e0"),
 			},
 		},
 		{
 			input: "1e6",
 			expected: []token.Token{
-				{Atom: "1e6", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1e6"),
 			},
 		},
 		{
 			input: "1e+6",
 			expected: []token.Token{
-				{Atom: "1e6", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1e6"),
 			},
 		},
 		{
 			input: "1E6",
 			expected: []token.Token{
-				{Atom: "1E6", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1E6"),
 			},
 		},
 		{
 			input: "1e-6",
 			expected: []token.Token{
-				{Atom: "1e-6", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1e-6"),
 			},
 		},
 		{
 			input: "1.2e6",
 			expected: []token.Token{
-				{Atom: "1.2e6", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1.2e6"),
 			},
 		},
 		{
 			input: "1 + 1",
 			expected: []token.Token{
-				{Atom: "1", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1"),
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
-				{Atom: "1", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1"),
 			},
 		},
 		{
 			input: "1 ** 1",
 			expected: []token.Token{
-				{Atom: "1", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1"),
 				{Atom: "**", TokenType: token.TokenTypeOperationPow},
-				{Atom: "1", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1"),
 			},
 		},
 		{
 			input: "10 % 3",
 			expected: []token.Token{
-				{Atom: "10", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("10"),
 				{Atom: "%", TokenType: token.TokenTypeOperationMod},
-				{Atom: "3", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("3"),
 			},
 		},
 		{

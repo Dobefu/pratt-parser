@@ -7,7 +7,7 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-func getNumberToken(atom string) token.Token {
+func parseNumberTestgetNumberToken(atom string) token.Token {
 	return token.Token{
 		Atom:      atom,
 		TokenType: token.TokenTypeNumber,
@@ -23,39 +23,39 @@ func TestParseNumber(t *testing.T) {
 	}{
 		{
 			input:    "1",
-			expected: []token.Token{getNumberToken("1")},
+			expected: []token.Token{parseNumberTestgetNumberToken("1")},
 		},
 		{
 			input:    "1.1",
-			expected: []token.Token{getNumberToken("1.1")},
+			expected: []token.Token{parseNumberTestgetNumberToken("1.1")},
 		},
 		{
 			input:    "1e1",
-			expected: []token.Token{getNumberToken("1e1")},
+			expected: []token.Token{parseNumberTestgetNumberToken("1e1")},
 		},
 		{
 			input:    "1e+1",
-			expected: []token.Token{getNumberToken("1e1")},
+			expected: []token.Token{parseNumberTestgetNumberToken("1e1")},
 		},
 		{
 			input:    "1e-1",
-			expected: []token.Token{getNumberToken("1e-1")},
+			expected: []token.Token{parseNumberTestgetNumberToken("1e-1")},
 		},
 		{
 			input: "1+1",
 			expected: []token.Token{
-				getNumberToken("1"),
+				parseNumberTestgetNumberToken("1"),
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
-				getNumberToken("1"),
+				parseNumberTestgetNumberToken("1"),
 			},
 		},
 		{
 			input:    "1_000_000",
-			expected: []token.Token{getNumberToken("1000000")},
+			expected: []token.Token{parseNumberTestgetNumberToken("1000000")},
 		},
 		{
 			input:    "1.1_000_000",
-			expected: []token.Token{getNumberToken("1.1000000")},
+			expected: []token.Token{parseNumberTestgetNumberToken("1.1000000")},
 		},
 	}
 
