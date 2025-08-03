@@ -22,46 +22,32 @@ func TestTokenize(t *testing.T) {
 		expected []token.Token
 	}{
 		{
-			input: "1",
-			expected: []token.Token{
-				tokenizeTestGetNumberToken("1"),
-			},
+			input:    "1",
+			expected: []token.Token{tokenizeTestGetNumberToken("1")},
 		},
 		{
-			input: "1e0",
-			expected: []token.Token{
-				tokenizeTestGetNumberToken("1e0"),
-			},
+			input:    "1e0",
+			expected: []token.Token{tokenizeTestGetNumberToken("1e0")},
 		},
 		{
-			input: "1e6",
-			expected: []token.Token{
-				tokenizeTestGetNumberToken("1e6"),
-			},
+			input:    "1e6",
+			expected: []token.Token{tokenizeTestGetNumberToken("1e6")},
 		},
 		{
-			input: "1e+6",
-			expected: []token.Token{
-				tokenizeTestGetNumberToken("1e6"),
-			},
+			input:    "1e+6",
+			expected: []token.Token{tokenizeTestGetNumberToken("1e6")},
 		},
 		{
-			input: "1E6",
-			expected: []token.Token{
-				tokenizeTestGetNumberToken("1E6"),
-			},
+			input:    "1E6",
+			expected: []token.Token{tokenizeTestGetNumberToken("1E6")},
 		},
 		{
-			input: "1e-6",
-			expected: []token.Token{
-				tokenizeTestGetNumberToken("1e-6"),
-			},
+			input:    "1e-6",
+			expected: []token.Token{tokenizeTestGetNumberToken("1e-6")},
 		},
 		{
-			input: "1.2e6",
-			expected: []token.Token{
-				tokenizeTestGetNumberToken("1.2e6"),
-			},
+			input:    "1.2e6",
+			expected: []token.Token{tokenizeTestGetNumberToken("1.2e6")},
 		},
 		{
 			input: "1 + 1",
@@ -90,27 +76,23 @@ func TestTokenize(t *testing.T) {
 		{
 			input: "1 + 2 * 3 / 4",
 			expected: []token.Token{
-				{Atom: "1", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("1"),
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
-				{Atom: "2", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("2"),
 				{Atom: "*", TokenType: token.TokenTypeOperationMul},
-				{Atom: "3", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("3"),
 				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
-				{Atom: "4", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("4"),
 			},
 		},
 		{
-			input: "1 + 2 * 3 / 4 - 5",
+			input: "3 / 4 - 5",
 			expected: []token.Token{
-				{Atom: "1", TokenType: token.TokenTypeNumber},
-				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
-				{Atom: "2", TokenType: token.TokenTypeNumber},
-				{Atom: "*", TokenType: token.TokenTypeOperationMul},
-				{Atom: "3", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("3"),
 				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
-				{Atom: "4", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("4"),
 				{Atom: "-", TokenType: token.TokenTypeOperationSub},
-				{Atom: "5", TokenType: token.TokenTypeNumber},
+				tokenizeTestGetNumberToken("5"),
 			},
 		},
 		{
