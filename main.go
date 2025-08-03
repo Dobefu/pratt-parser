@@ -2,27 +2,50 @@
 package main
 
 import (
+	"errors"
 	"log/slog"
 	"os"
 
+	"github.com/Dobefu/pratt-parser/internal/ast"
 	"github.com/Dobefu/pratt-parser/internal/parser"
 )
 
-func main() {
-	if len(os.Args) <= 1 {
-		slog.Error("Usage: go run main.go <expression>")
-		os.Exit(1)
+type Main struct {
+	args    []string
+	onError func(error)
+
+	ast ast.ExprNode
+}
+
+func (m *Main) Run() {
+	if len(m.args) <= 1 {
+		m.onError(errors.New("usage: go run main.go <expression>"))
+
+		return
 	}
 
-	p := parser.NewParser(os.Args[1])
+	p := parser.NewParser(m.args[1])
 	ast, err := p.Parse()
 
-	if ast != nil {
-		slog.Info(ast.Expr())
+	if err != nil {
+		m.onError(err)
 	}
 
-	if err != nil {
-		slog.Error(err.Error())
-		os.Exit(1)
+	m.ast = ast
+
+	if m.ast != nil {
+		slog.Info(m.ast.Expr())
 	}
+}
+
+func main() {
+	(&Main{
+		args: os.Args,
+		onError: func(err error) {
+			slog.Error(err.Error())
+			os.Exit(1)
+		},
+
+		ast: nil,
+	}).Run()
 }
