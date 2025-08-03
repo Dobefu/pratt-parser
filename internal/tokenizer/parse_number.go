@@ -50,82 +50,53 @@ GETNEXT:
 
 		switch next {
 		case '_':
-			if lastByte == '_' {
-				errMsg = "multiple underscores in number %s"
-			}
-
-			_, err = t.GetNext()
-
-			if err != nil {
-				errMsg = errMsgGeneric
-			}
+			errMsg = t.handleUnderscore(lastByte, errMsg)
 
 		case '.':
-			if (numberFlags & NumberFlagFloat) != 0 {
-				errMsg = "multiple decimal points in number %s"
-			}
-
-			_, err = t.GetNext()
-
-			if err != nil {
-				return token.Token{}, err
-			}
-
-			number.WriteByte(next)
-			numberFlags |= NumberFlagFloat
+			errMsg = t.handleDecimalPoint(&numberFlags, &number, errMsg)
 
 		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-			if !isNumberValid && (numberFlags&NumberFlagExponent) != 0 {
-				isNumberValid = true
-			}
-
-			_, err = t.GetNext()
-
-			if err != nil {
-				return token.Token{}, err
-			}
-
-			number.WriteByte(next)
+			errMsg = t.handleDigit(
+				&numberFlags,
+				&number,
+				&isNumberValid,
+				next,
+				errMsg,
+			)
 
 		case 'e', 'E':
-			if !isNumberValid || (numberFlags&NumberFlagExponent) != 0 {
-				errMsg = "multiple exponent signs in number %s"
-			}
-
-			numberFlags |= NumberFlagExponent
-			isNumberValid = false
-
-			_, err = t.GetNext()
-
-			if err != nil {
-				return token.Token{}, err
-			}
-
-			number.WriteByte(next)
+			errMsg = t.handleExponent(
+				&numberFlags,
+				&number,
+				&isNumberValid,
+				next,
+				errMsg,
+			)
 
 		case '+', '-':
-			if (numberFlags & NumberFlagExponent) == 0 {
+			var shouldBreak bool
+
+			errMsg, shouldBreak = t.handleAdditionAndSubtraction(
+				&numberFlags,
+				&number,
+				&isNumberValid,
+				lastByte,
+				next,
+				errMsg,
+			)
+
+			if shouldBreak {
 				break GETNEXT
-			}
-
-			_, err = t.GetNext()
-
-			if err != nil {
-				return token.Token{}, err
-			}
-
-			if lastByte == '+' || lastByte == '-' {
-				errMsg = errMsgGeneric
-			}
-
-			isNumberValid = false
-
-			if next == '-' {
-				number.WriteByte(next)
 			}
 
 		default:
 			break GETNEXT
+		}
+
+		_, err = t.GetNext()
+
+		if err != nil {
+			return token.Token{}, err
 		}
 
 		lastByte = next
@@ -143,6 +114,92 @@ GETNEXT:
 		Atom:      number.String(),
 		TokenType: token.TokenTypeNumber,
 	}, nil
+}
+
+func (t *Tokenizer) handleUnderscore(
+	lastByte byte,
+	currentErrMsg string,
+) string {
+	if lastByte == '_' {
+		return "multiple underscores in number %s"
+	}
+
+	return currentErrMsg
+}
+
+func (t *Tokenizer) handleDecimalPoint(
+	numberFlags *NumberFlags,
+	number *strings.Builder,
+	currentErrMsg string,
+) string {
+	if (*numberFlags & NumberFlagFloat) != 0 {
+		return "multiple decimal points in number %s"
+	}
+
+	*numberFlags |= NumberFlagFloat
+	number.WriteByte('.')
+
+	return currentErrMsg
+}
+
+func (t *Tokenizer) handleDigit(
+	numberFlags *NumberFlags,
+	number *strings.Builder,
+	isNumberValid *bool,
+	next byte,
+	currentErrMsg string,
+) string {
+	if !*isNumberValid && (*numberFlags&NumberFlagExponent) != 0 {
+		*isNumberValid = true
+	}
+
+	number.WriteByte(next)
+
+	return currentErrMsg
+}
+
+func (t *Tokenizer) handleExponent(
+	numberFlags *NumberFlags,
+	number *strings.Builder,
+	isNumberValid *bool,
+	next byte,
+	currentErrMsg string,
+) string {
+	if !*isNumberValid || (*numberFlags&NumberFlagExponent) != 0 {
+		return "multiple exponent signs in number %s"
+	}
+
+	*numberFlags |= NumberFlagExponent
+	*isNumberValid = false
+
+	number.WriteByte(next)
+
+	return currentErrMsg
+}
+
+func (t *Tokenizer) handleAdditionAndSubtraction(
+	numberFlags *NumberFlags,
+	number *strings.Builder,
+	isNumberValid *bool,
+	lastByte byte,
+	next byte,
+	currentErrMsg string,
+) (string, bool) {
+	if (*numberFlags & NumberFlagExponent) == 0 {
+		return currentErrMsg, true
+	}
+
+	if lastByte == '+' || lastByte == '-' {
+		return errMsgGeneric, true
+	}
+
+	*isNumberValid = false
+
+	if next == '-' {
+		number.WriteByte(next)
+	}
+
+	return currentErrMsg, false
 }
 
 func isLastByteValid(lastByte byte) bool {
