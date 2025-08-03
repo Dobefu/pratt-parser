@@ -47,52 +47,74 @@ func (p *Parser) parseExpr(
 		token.TokenTypeOperationDiv,
 		token.TokenTypeOperationMod:
 
-		if p.getBindingPower(nextToken, false) < minPrecedence {
-			return leftExpr, nil
-		}
-
-		operator, err := p.GetNextToken()
-
-		if err != nil {
-			return nil, err
-		}
-
-		rightToken, err := p.GetNextToken()
-
-		if err != nil {
-			return nil, err
-		}
-
-		expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth+1)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return p.parseExpr(nil, expr, minPrecedence, recursionDepth+1)
+		return p.handleBasicOperatorTokens(
+			nextToken,
+			leftExpr,
+			minPrecedence,
+			recursionDepth,
+		)
 
 	case token.TokenTypeOperationPow:
-		operator, err := p.GetNextToken()
-
-		if err != nil {
-			return nil, err
-		}
-
-		rightToken, err := p.GetNextToken()
-
-		if err != nil {
-			return nil, err
-		}
-
-		expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth+1)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return p.parseExpr(nil, expr, minPrecedence-1, recursionDepth+1)
+		return p.handlePowToken(leftExpr, minPrecedence, recursionDepth)
 
 	default:
 		return leftExpr, nil
 	}
+}
+
+func (p *Parser) handleBasicOperatorTokens(
+	nextToken *token.Token,
+	leftExpr ast.ExprNode,
+	minPrecedence int,
+	recursionDepth int,
+) (ast.ExprNode, error) {
+	if p.getBindingPower(nextToken, false) < minPrecedence {
+		return leftExpr, nil
+	}
+
+	operator, err := p.GetNextToken()
+
+	if err != nil {
+		return nil, err
+	}
+
+	rightToken, err := p.GetNextToken()
+
+	if err != nil {
+		return nil, err
+	}
+
+	expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth+1)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return p.parseExpr(nil, expr, minPrecedence, recursionDepth+1)
+}
+
+func (p *Parser) handlePowToken(
+	leftExpr ast.ExprNode,
+	minPrecedence int,
+	recursionDepth int,
+) (ast.ExprNode, error) {
+	operator, err := p.GetNextToken()
+
+	if err != nil {
+		return nil, err
+	}
+
+	rightToken, err := p.GetNextToken()
+
+	if err != nil {
+		return nil, err
+	}
+
+	expr, err := p.parseBinaryExpr(operator, leftExpr, rightToken, recursionDepth+1)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return p.parseExpr(nil, expr, minPrecedence-1, recursionDepth+1)
 }
