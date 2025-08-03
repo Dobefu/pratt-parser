@@ -5,7 +5,7 @@ linters:
     - exhaustive
     - exhaustruct
     - forbidigo
-    - gocyclo
+    - gocognit
     - godot
     - gosec
     - govet
@@ -17,3 +17,6 @@ linters:
     - sloglint
     - staticcheck
     - unused
+  settings:
+    gocognit:
+      min-complexity: 15
