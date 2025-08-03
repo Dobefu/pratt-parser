@@ -26,4 +26,6 @@ const (
 	TokenTypeRParen
 	// TokenTypeFunction represents a function name.
 	TokenTypeFunction
+	// TokenTypeComma represents a comma separator.
+	TokenTypeComma
 )

@@ -3,6 +3,7 @@ package tokenizer
 import (
 	"fmt"
 
+	"github.com/Dobefu/pratt-parser/internal/charutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -78,12 +79,20 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 				TokenType: token.TokenTypeRParen,
 			})
 
+		case ',':
+			tokens = append(tokens, token.Token{
+				Atom:      ",",
+				TokenType: token.TokenTypeComma,
+			})
+
 		default:
-			return tokens, fmt.Errorf(
-				"unexpected character: %s at position %d",
-				string(next),
-				t.expIdx,
-			)
+			newToken, err := t.parseUnknownChar(next)
+
+			if err != nil {
+				return nil, err
+			}
+
+			tokens = append(tokens, newToken)
 		}
 	}
 
@@ -91,13 +100,13 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 }
 
 func (t *Tokenizer) handleAsterisk() (token.Token, error) {
-	nextChar, err := t.Peek()
+	next, err := t.Peek()
 
 	if err != nil {
 		return token.Token{}, err
 	}
 
-	if nextChar == '*' {
+	if next == '*' {
 		_, err = t.GetNext()
 
 		if err != nil {
@@ -114,4 +123,47 @@ func (t *Tokenizer) handleAsterisk() (token.Token, error) {
 		Atom:      "*",
 		TokenType: token.TokenTypeOperationMul,
 	}, nil
+}
+
+func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
+	identifier := string(firstChar)
+
+	for !t.isEOF {
+		next, err := t.Peek()
+
+		if err != nil {
+			break
+		}
+
+		if charutil.IsLetter(rune(next)) ||
+			next == '_' ||
+			charutil.IsDigit(rune(next)) {
+			_, err = t.GetNext()
+
+			if err != nil {
+				return token.Token{}, err
+			}
+
+			identifier += string(next)
+
+			continue
+		}
+	}
+
+	return token.Token{
+		Atom:      identifier,
+		TokenType: token.TokenTypeIdentifier,
+	}, nil
+}
+
+func (t *Tokenizer) parseUnknownChar(next byte) (token.Token, error) {
+	if charutil.IsLetter(rune(next)) || next == '_' {
+		return t.parseIdentifier(rune(next))
+	}
+
+	return token.Token{}, fmt.Errorf(
+		"unexpected character: %s at position %d",
+		string(next),
+		t.expIdx,
+	)
 }
