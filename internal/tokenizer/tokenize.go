@@ -46,29 +46,13 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 			})
 
 		case '*':
-			nextChar, err := t.Peek()
+			token, err := t.handleAsterisk()
 
 			if err != nil {
 				return nil, err
 			}
 
-			if nextChar == '*' {
-				_, err = t.GetNext()
-
-				if err != nil {
-					return nil, err
-				}
-
-				tokens = append(tokens, token.Token{
-					Atom:      "**",
-					TokenType: token.TokenTypeOperationPow,
-				})
-			} else {
-				tokens = append(tokens, token.Token{
-					Atom:      "*",
-					TokenType: token.TokenTypeOperationMul,
-				})
-			}
+			tokens = append(tokens, token)
 
 		case '%':
 			tokens = append(tokens, token.Token{
@@ -104,4 +88,30 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 	}
 
 	return tokens, nil
+}
+
+func (t *Tokenizer) handleAsterisk() (token.Token, error) {
+	nextChar, err := t.Peek()
+
+	if err != nil {
+		return token.Token{}, err
+	}
+
+	if nextChar == '*' {
+		_, err = t.GetNext()
+
+		if err != nil {
+			return token.Token{}, err
+		}
+
+		return token.Token{
+			Atom:      "**",
+			TokenType: token.TokenTypeOperationPow,
+		}, nil
+	}
+
+	return token.Token{
+		Atom:      "*",
+		TokenType: token.TokenTypeOperationMul,
+	}, nil
 }
