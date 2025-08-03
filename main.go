@@ -17,7 +17,9 @@ func main() {
 	p := parser.NewParser(os.Args[1])
 	ast, err := p.Parse()
 
-	slog.Info(ast.Expr())
+	if ast != nil {
+		slog.Info(ast.Expr())
+	}
 
 	if err != nil {
 		slog.Error(err.Error())
