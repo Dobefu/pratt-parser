@@ -18,6 +18,9 @@ func (e *Evaluator) Evaluate(currentAst ast.ExprNode) (float64, error) {
 	case *ast.PrefixExpr:
 		return e.evaluatePrefixExpr(node)
 
+	case *ast.FunctionCall:
+		return e.evaluateFunctionCall(node)
+
 	default:
 		return 0, fmt.Errorf("unknown node type: %T", node)
 	}
