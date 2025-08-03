@@ -21,6 +21,14 @@ func (e *Evaluator) evaluateBinaryExpr(node *ast.BinaryExpr) (float64, error) {
 		return 0, err
 	}
 
+	if node.Operator.TokenType == token.TokenTypeOperationDiv && rightEvaluated == 0 {
+		return 0, fmt.Errorf("division by zero")
+	}
+
+	if node.Operator.TokenType == token.TokenTypeOperationMod && rightEvaluated == 0 {
+		return 0, fmt.Errorf("modulo by zero")
+	}
+
 	switch node.Operator.TokenType {
 	case token.TokenTypeOperationAdd:
 		return leftEvaluated + rightEvaluated, nil
