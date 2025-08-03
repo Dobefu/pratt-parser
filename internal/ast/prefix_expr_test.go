@@ -6,7 +6,7 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-func TestBinaryExpr(t *testing.T) {
+func TestPrefixExpr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -14,15 +14,21 @@ func TestBinaryExpr(t *testing.T) {
 		expected string
 	}{
 		{
-			input: &BinaryExpr{
-				Left:  &NumberLiteral{Value: "1"},
-				Right: &NumberLiteral{Value: "1"},
+			input: &PrefixExpr{
 				Operator: token.Token{
 					Atom:      "+",
 					TokenType: token.TokenTypeOperationAdd,
 				},
+				Operand: &BinaryExpr{
+					Left:  &NumberLiteral{Value: "1"},
+					Right: &NumberLiteral{Value: "1"},
+					Operator: token.Token{
+						Atom:      "+",
+						TokenType: token.TokenTypeOperationAdd,
+					},
+				},
 			},
-			expected: "(1 + 1)",
+			expected: "(+ (1 + 1))",
 		},
 	}
 
