@@ -10,6 +10,7 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/parser"
 )
 
+// Main is the main entrypoint of the application.
 type Main struct {
 	args    []string
 	onError func(error)
@@ -17,6 +18,7 @@ type Main struct {
 	ast ast.ExprNode
 }
 
+// Run actually runs the application.
 func (m *Main) Run() {
 	if len(m.args) <= 1 {
 		m.onError(errors.New("usage: go run main.go <expression>"))
