@@ -18,6 +18,15 @@ func (e *Evaluator) evaluateFunctionCall(fc *ast.FunctionCall) (float64, error) 
 
 		return math.Abs(argValues[0]), nil
 
+	case "sin":
+		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
+
+		if err != nil {
+			return 0, err
+		}
+
+		return math.Sin(argValues[0]), nil
+
 	case "cos":
 		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
 
@@ -27,14 +36,14 @@ func (e *Evaluator) evaluateFunctionCall(fc *ast.FunctionCall) (float64, error) 
 
 		return math.Cos(argValues[0]), nil
 
-	case "sin":
+	case "tan":
 		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
 
 		if err != nil {
 			return 0, err
 		}
 
-		return math.Sin(argValues[0]), nil
+		return math.Tan(argValues[0]), nil
 
 	default:
 		return 0, fmt.Errorf("undefined function: %s", fc.FunctionName)
