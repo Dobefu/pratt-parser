@@ -45,6 +45,15 @@ func (e *Evaluator) evaluateFunctionCall(fc *ast.FunctionCall) (float64, error) 
 
 		return math.Tan(argValues[0]), nil
 
+	case "sqrt":
+		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
+
+		if err != nil {
+			return 0, err
+		}
+
+		return math.Sqrt(argValues[0]), nil
+
 	default:
 		return 0, fmt.Errorf("undefined function: %s", fc.FunctionName)
 	}
