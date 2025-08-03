@@ -2,88 +2,37 @@ package evaluator
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
 )
 
-func (e *Evaluator) evaluateFunctionCall(fc *ast.FunctionCall) (float64, error) {
-	switch fc.FunctionName {
-	case "abs":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
+type functionHandler func([]float64) (float64, error)
 
-		if err != nil {
-			return 0, err
-		}
+type functionInfo struct {
+	handler  functionHandler
+	argCount int
+}
 
-		return math.Abs(argValues[0]), nil
+func (e *Evaluator) evaluateFunctionCall(
+	fc *ast.FunctionCall,
+) (float64, error) {
+	function, ok := functionRegistry[fc.FunctionName]
 
-	case "sin":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
-
-		if err != nil {
-			return 0, err
-		}
-
-		return math.Sin(argValues[0]), nil
-
-	case "cos":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
-
-		if err != nil {
-			return 0, err
-		}
-
-		return math.Cos(argValues[0]), nil
-
-	case "tan":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
-
-		if err != nil {
-			return 0, err
-		}
-
-		return math.Tan(argValues[0]), nil
-
-	case "sqrt":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
-
-		if err != nil {
-			return 0, err
-		}
-
-		return math.Sqrt(argValues[0]), nil
-
-	case "round":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
-
-		if err != nil {
-			return 0, err
-		}
-
-		return math.Round(argValues[0]), nil
-
-	case "floor":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
-
-		if err != nil {
-			return 0, err
-		}
-
-		return math.Floor(argValues[0]), nil
-
-	case "ceil":
-		argValues, err := e.evaluateArguments(fc.Arguments, 1, fc.FunctionName)
-
-		if err != nil {
-			return 0, err
-		}
-
-		return math.Ceil(argValues[0]), nil
-
-	default:
+	if !ok {
 		return 0, fmt.Errorf("undefined function: %s", fc.FunctionName)
 	}
+
+	argValues, err := e.evaluateArguments(
+		fc.Arguments,
+		function.argCount,
+		fc.FunctionName,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return function.handler(argValues)
 }
 
 func (e *Evaluator) evaluateArguments(
