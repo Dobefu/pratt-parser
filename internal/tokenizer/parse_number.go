@@ -101,7 +101,7 @@ GETNEXT:
 
 		case '+', '-':
 			if (numberFlags & NumberFlagExponent) == 0 {
-				errMsg = "invalid number %s"
+				break GETNEXT
 			}
 
 			_, err = t.GetNext()
@@ -116,7 +116,7 @@ GETNEXT:
 
 			isNumberValid = false
 
-			if next != '+' {
+			if next == '-' {
 				number.WriteByte(next)
 			}
 

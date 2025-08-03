@@ -27,6 +27,32 @@ func TestParseNumber(t *testing.T) {
 			},
 		},
 		{
+			input: "1e1",
+			expected: []token.Token{
+				{Atom: "1e1", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1e+1",
+			expected: []token.Token{
+				{Atom: "1e+1", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1e-1",
+			expected: []token.Token{
+				{Atom: "1e-1", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
+			input: "1+1",
+			expected: []token.Token{
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
+		},
+		{
 			input: "1_000_000",
 			expected: []token.Token{
 				{Atom: "1000000", TokenType: token.TokenTypeNumber},
