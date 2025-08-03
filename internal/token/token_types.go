@@ -24,4 +24,6 @@ const (
 	TokenTypeLParen
 	// TokenTypeRParen represents a right parenthesis.
 	TokenTypeRParen
+	// TokenTypeFunction represents a function name.
+	TokenTypeFunction
 )
