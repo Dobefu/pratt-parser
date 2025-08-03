@@ -80,7 +80,7 @@ func TestMainErr(t *testing.T) {
 
 		main := &Main{
 			args: args,
-			onError: func(err error) {
+			onError: func(_ error) {
 				hasError = true
 			},
 
