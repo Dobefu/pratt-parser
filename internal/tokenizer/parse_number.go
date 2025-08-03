@@ -17,6 +17,10 @@ const (
 	NumberFlagExponent
 )
 
+const (
+	errMsgGeneric = "invalid number %s"
+)
+
 func (t *Tokenizer) parseNumber(current byte) (token.Token, error) {
 	errMsg := ""
 
@@ -53,7 +57,7 @@ GETNEXT:
 			_, err = t.GetNext()
 
 			if err != nil {
-				errMsg = "invalid number %s"
+				errMsg = errMsgGeneric
 			}
 
 		case '.':
@@ -111,7 +115,7 @@ GETNEXT:
 			}
 
 			if lastByte == '+' || lastByte == '-' {
-				errMsg = "invalid number %s"
+				errMsg = errMsgGeneric
 			}
 
 			isNumberValid = false
@@ -128,7 +132,7 @@ GETNEXT:
 	}
 
 	if !isLastByteValid(lastByte) {
-		errMsg = "invalid number %s"
+		errMsg = errMsgGeneric
 	}
 
 	if errMsg != "" {
