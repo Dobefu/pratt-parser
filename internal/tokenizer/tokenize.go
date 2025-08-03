@@ -80,7 +80,7 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 
 		default:
 			return tokens, fmt.Errorf(
-				"unexpected character %s at index %d",
+				"unexpected character: %s at position %d",
 				string(next),
 				t.expIdx,
 			)

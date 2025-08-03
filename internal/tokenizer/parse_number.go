@@ -99,7 +99,7 @@ GETNEXT:
 	}
 
 	if !isLastByteValid(lastByte) {
-		errMsg = "trailing character in number %s"
+		errMsg = "trailing character in number: %s"
 	}
 
 	if errMsg != "" {
@@ -117,7 +117,7 @@ func (t *Tokenizer) handleUnderscore(
 	currentErrMsg string,
 ) string {
 	if lastByte == '_' {
-		return "multiple underscores in number %s"
+		return "multiple consecutive underscores in number: %s"
 	}
 
 	return currentErrMsg
@@ -129,7 +129,7 @@ func (t *Tokenizer) handleDecimalPoint(
 	currentErrMsg string,
 ) string {
 	if (*numberFlags & NumberFlagFloat) != 0 {
-		return "multiple decimal points in number %s"
+		return "multiple decimal points in number: %s"
 	}
 
 	*numberFlags |= NumberFlagFloat
@@ -162,7 +162,7 @@ func (t *Tokenizer) handleExponent(
 	currentErrMsg string,
 ) string {
 	if !*isNumberValid || (*numberFlags&NumberFlagExponent) != 0 {
-		return "multiple exponent signs in number %s"
+		return "multiple exponent signs in number: %s"
 	}
 
 	*numberFlags |= NumberFlagExponent
@@ -186,7 +186,7 @@ func (t *Tokenizer) handleAdditionAndSubtraction(
 	}
 
 	if lastByte == '+' || lastByte == '-' {
-		return "multiple addition or subtraction signs in exponent %s", true
+		return "multiple consecutive addition or subtraction signs in exponent: %s", true
 	}
 
 	*isNumberValid = false

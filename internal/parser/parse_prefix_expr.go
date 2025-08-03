@@ -59,7 +59,7 @@ func (p *Parser) parsePrefixExpr(
 		}
 
 		if rparenToken.TokenType != token.TokenTypeRParen {
-			return nil, fmt.Errorf("expected ')', got %s", rparenToken.Atom)
+			return nil, fmt.Errorf("expected ')', got: %s", rparenToken.Atom)
 		}
 
 		return expr, nil

@@ -14,7 +14,7 @@ func (p *Parser) parseBinaryExpr(
 	recursionDepth int,
 ) (ast.ExprNode, error) {
 	if leftExpr == nil {
-		return nil, fmt.Errorf("unexpected token %s", operatorToken.Atom)
+		return nil, fmt.Errorf("unexpected token: %s", operatorToken.Atom)
 	}
 
 	rightExpr, err := p.parseExpr(
