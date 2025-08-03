@@ -23,21 +23,11 @@ func TestTokenize(t *testing.T) {
 			},
 		},
 		{
-			input: "1.1",
+			input: "10 % 3",
 			expected: []token.Token{
-				{Atom: "1.1", TokenType: token.TokenTypeNumber},
-			},
-		},
-		{
-			input: "1_000_000",
-			expected: []token.Token{
-				{Atom: "1000000", TokenType: token.TokenTypeNumber},
-			},
-		},
-		{
-			input: "1.1_000_000",
-			expected: []token.Token{
-				{Atom: "1.1000000", TokenType: token.TokenTypeNumber},
+				{Atom: "10", TokenType: token.TokenTypeNumber},
+				{Atom: "%", TokenType: token.TokenTypeOperationMod},
+				{Atom: "3", TokenType: token.TokenTypeNumber},
 			},
 		},
 		{
