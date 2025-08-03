@@ -10,31 +10,31 @@ func TestMain(t *testing.T) {
 
 	tests := []struct {
 		input    string
-		expected string
+		expected float64
 	}{
 		{
 			input:    "1",
-			expected: "1",
+			expected: 1,
 		},
 		{
 			input:    "1 + 1",
-			expected: "(1 + 1)",
+			expected: 2,
 		},
 		{
 			input:    "(1 + 1)",
-			expected: "(1 + 1)",
+			expected: 2,
 		},
 		{
 			input:    "1 + 2 * 3",
-			expected: "(1 + (2 * 3))",
+			expected: 7,
 		},
 		{
 			input:    "(1 + 2) * 3",
-			expected: "((1 + 2) * 3)",
+			expected: 9,
 		},
 		{
 			input:    "1 + 2 * 3 / 4",
-			expected: "(1 + ((2 * 3) / 4))",
+			expected: 2.5,
 		},
 	}
 
@@ -45,13 +45,13 @@ func TestMain(t *testing.T) {
 				t.Errorf("expected no error, got %v", err)
 			},
 
-			ast: nil,
+			result: 0,
 		}
 
 		main.Run()
 
-		if main.ast.Expr() != test.expected {
-			t.Errorf("expected %s, got %s", test.expected, main.ast.Expr())
+		if main.result != test.expected {
+			t.Errorf("expected %f, got %f", test.expected, main.result)
 		}
 	}
 }
@@ -84,7 +84,7 @@ func TestMainErr(t *testing.T) {
 				hasError = true
 			},
 
-			ast: nil,
+			result: 0,
 		}
 
 		main.Run()

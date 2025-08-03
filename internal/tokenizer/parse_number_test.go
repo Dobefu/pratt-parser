@@ -35,7 +35,7 @@ func TestParseNumber(t *testing.T) {
 		{
 			input: "1e+1",
 			expected: []token.Token{
-				{Atom: "1e+1", TokenType: token.TokenTypeNumber},
+				{Atom: "1e1", TokenType: token.TokenTypeNumber},
 			},
 		},
 		{

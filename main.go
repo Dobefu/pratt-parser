@@ -5,8 +5,8 @@ import (
 	"errors"
 	"log/slog"
 	"os"
+	"strconv"
 
-	"github.com/Dobefu/pratt-parser/internal/ast"
 	"github.com/Dobefu/pratt-parser/internal/parser"
 )
 
@@ -15,7 +15,7 @@ type Main struct {
 	args    []string
 	onError func(error)
 
-	ast ast.ExprNode
+	result float64
 }
 
 // Run actually runs the application.
@@ -27,17 +27,15 @@ func (m *Main) Run() {
 	}
 
 	p := parser.NewParser(m.args[1])
-	ast, err := p.Parse()
+	result, err := p.Parse()
 
 	if err != nil {
 		m.onError(err)
 	}
 
-	m.ast = ast
+	m.result = result
 
-	if m.ast != nil {
-		slog.Info(m.ast.Expr())
-	}
+	slog.Info(strconv.FormatFloat(m.result, 'g', -1, 64))
 }
 
 func main() {
@@ -48,6 +46,6 @@ func main() {
 			os.Exit(1)
 		},
 
-		ast: nil,
+		result: 0,
 	}).Run()
 }

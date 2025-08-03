@@ -9,17 +9,17 @@ func TestParsePrefixExpr(t *testing.T) {
 
 	tests := []struct {
 		input    string
-		expected string
+		expected float64
 	}{
 		{
 			input:    "1",
-			expected: "1",
+			expected: 1,
 		},
 	}
 
 	for _, test := range tests {
 		parser := NewParser(test.input)
-		ast, err := parser.Parse()
+		result, err := parser.Parse()
 
 		if err != nil {
 			t.Errorf("expected no error, got %v", err)
@@ -27,8 +27,8 @@ func TestParsePrefixExpr(t *testing.T) {
 			continue
 		}
 
-		if ast.Expr() != test.expected {
-			t.Errorf("expected %s, got %s", test.expected, ast.Expr())
+		if result != test.expected {
+			t.Errorf("expected %f, got %f", test.expected, result)
 		}
 	}
 }

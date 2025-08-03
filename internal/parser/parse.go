@@ -2,16 +2,14 @@ package parser
 
 import (
 	"fmt"
-
-	"github.com/Dobefu/pratt-parser/internal/ast"
 )
 
 // Parse parses the expression string supplied in the struct.
-func (p *Parser) Parse() (ast.ExprNode, error) {
+func (p *Parser) Parse() (float64, error) {
 	tokens, err := p.tokenizer.Tokenize()
 
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	p.tokens = tokens
@@ -19,22 +17,26 @@ func (p *Parser) Parse() (ast.ExprNode, error) {
 	p.isEOF = len(tokens) <= 0
 
 	if len(tokens) == 0 {
-		return nil, fmt.Errorf("no tokens to parse")
+		return 0, fmt.Errorf("no tokens to parse")
 	}
 
 	nextToken, err := p.GetNextToken()
 
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	ast, err := p.parseExpr(nextToken, nil, 0, 0)
 
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	p.ast = ast
+	result, err := p.evaluator.Evaluate(ast)
 
-	return ast, nil
+	if err != nil {
+		return 0, err
+	}
+
+	return result, nil
 }
