@@ -47,6 +47,7 @@ func (p *Parser) parsePrefixExpr(
 		}
 
 		expr, err := p.parseExpr(nextToken, nil, 0, recursionDepth+1)
+
 		if err != nil {
 			return nil, err
 		}
