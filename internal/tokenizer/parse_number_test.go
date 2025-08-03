@@ -53,6 +53,32 @@ func TestParseNumber(t *testing.T) {
 	}
 }
 
+func TestParseNumberErr(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		input string
+	}{
+		{
+			input: "1__2",
+		},
+		{
+			input: "1..1",
+		},
+		{
+			input: "1.",
+		},
+	}
+
+	for _, test := range tests {
+		_, err := NewTokenizer(test.input).Tokenize()
+
+		if err == nil {
+			t.Fatalf("expected error for %s, got none", test.input)
+		}
+	}
+}
+
 func BenchmarkParseNumber(b *testing.B) {
 	for b.Loop() {
 		t := NewTokenizer("1 + -2 * 3 / 4")
