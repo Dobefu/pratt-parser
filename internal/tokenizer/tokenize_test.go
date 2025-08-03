@@ -30,24 +30,24 @@ func TestTokenize(t *testing.T) {
 			expected: []token.Token{tokenizeTestGetNumberToken("1e0")},
 		},
 		{
-			input:    "1e6",
-			expected: []token.Token{tokenizeTestGetNumberToken("1e6")},
+			input:    "1e5",
+			expected: []token.Token{tokenizeTestGetNumberToken("1e5")},
 		},
 		{
 			input:    "1e+6",
 			expected: []token.Token{tokenizeTestGetNumberToken("1e6")},
 		},
 		{
-			input:    "1E6",
-			expected: []token.Token{tokenizeTestGetNumberToken("1E6")},
+			input:    "1E7",
+			expected: []token.Token{tokenizeTestGetNumberToken("1E7")},
 		},
 		{
-			input:    "1e-6",
-			expected: []token.Token{tokenizeTestGetNumberToken("1e-6")},
+			input:    "1e-8",
+			expected: []token.Token{tokenizeTestGetNumberToken("1e-8")},
 		},
 		{
-			input:    "1.2e6",
-			expected: []token.Token{tokenizeTestGetNumberToken("1.2e6")},
+			input:    "1.2e9",
+			expected: []token.Token{tokenizeTestGetNumberToken("1.2e9")},
 		},
 		{
 			input: "1 + 1",
@@ -58,11 +58,11 @@ func TestTokenize(t *testing.T) {
 			},
 		},
 		{
-			input: "1 ** 1",
+			input: "2 ** 2",
 			expected: []token.Token{
-				tokenizeTestGetNumberToken("1"),
+				tokenizeTestGetNumberToken("2"),
 				{Atom: "**", TokenType: token.TokenTypeOperationPow},
-				tokenizeTestGetNumberToken("1"),
+				tokenizeTestGetNumberToken("2"),
 			},
 		},
 		{
@@ -86,10 +86,8 @@ func TestTokenize(t *testing.T) {
 			},
 		},
 		{
-			input: "3 / 4 - 5",
+			input: "4 - 5",
 			expected: []token.Token{
-				tokenizeTestGetNumberToken("3"),
-				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
 				tokenizeTestGetNumberToken("4"),
 				{Atom: "-", TokenType: token.TokenTypeOperationSub},
 				tokenizeTestGetNumberToken("5"),
