@@ -18,8 +18,12 @@ const (
 )
 
 func (t *Tokenizer) parseNumber(current byte) (token.Token, error) {
+	errMsg := ""
+
 	var number strings.Builder
+	var literalNumber strings.Builder
 	number.WriteByte(current)
+	literalNumber.WriteByte(current)
 
 	lastByte := current
 	isNumberValid := true
@@ -38,29 +42,23 @@ GETNEXT:
 			return token.Token{}, err
 		}
 
+		literalNumber.WriteByte(next)
+
 		switch next {
 		case '_':
 			if lastByte == '_' {
-				return token.Token{}, fmt.Errorf("invalid number %s", number.String()+"_")
+				errMsg = "multiple underscores in number %s"
 			}
 
 			_, err = t.GetNext()
 
 			if err != nil {
-				return token.Token{}, err
+				errMsg = "invalid number %s"
 			}
-
-			lastByte = next
-
-			continue GETNEXT
 
 		case '.':
 			if (numberFlags & NumberFlagFloat) != 0 {
-				isNumberValid = false
-			}
-
-			if lastByte == '.' {
-				return token.Token{}, fmt.Errorf("invalid number %s", number.String())
+				errMsg = "multiple decimal points in number %s"
 			}
 
 			_, err = t.GetNext()
@@ -87,7 +85,7 @@ GETNEXT:
 
 		case 'e', 'E':
 			if !isNumberValid || (numberFlags&NumberFlagExponent) != 0 {
-				return token.Token{}, fmt.Errorf("invalid number %s", number.String())
+				errMsg = "multiple exponent signs in number %s"
 			}
 
 			numberFlags |= NumberFlagExponent
@@ -103,7 +101,7 @@ GETNEXT:
 
 		case '+', '-':
 			if (numberFlags & NumberFlagExponent) == 0 {
-				return token.Token{}, fmt.Errorf("invalid number %s", number.String())
+				errMsg = "invalid number %s"
 			}
 
 			_, err = t.GetNext()
@@ -113,7 +111,7 @@ GETNEXT:
 			}
 
 			if lastByte == '+' || lastByte == '-' {
-				return token.Token{}, fmt.Errorf("invalid number %s", number.String()+"_")
+				errMsg = "invalid number %s"
 			}
 
 			isNumberValid = false
@@ -130,7 +128,11 @@ GETNEXT:
 	}
 
 	if !isLastByteValid(lastByte) {
-		return token.Token{}, fmt.Errorf("invalid number %s", number.String())
+		errMsg = "invalid number %s"
+	}
+
+	if errMsg != "" {
+		return token.Token{}, fmt.Errorf(errMsg, literalNumber.String())
 	}
 
 	return token.Token{
