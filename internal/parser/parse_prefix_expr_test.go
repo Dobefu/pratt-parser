@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"math"
 	"testing"
 )
 
@@ -13,6 +14,18 @@ func TestParsePrefixExpr(t *testing.T) {
 	}{
 		{
 			input:    "1",
+			expected: 1,
+		},
+		{
+			input:    "PI",
+			expected: math.Pi,
+		},
+		{
+			input:    "PI + 1",
+			expected: math.Pi + 1,
+		},
+		{
+			input:    "abs(-1)",
 			expected: 1,
 		},
 	}
