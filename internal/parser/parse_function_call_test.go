@@ -77,6 +77,9 @@ func TestParseFunctionCallErr(t *testing.T) {
 		{
 			input: "(1",
 		},
+		{
+			input: "(1,",
+		},
 	}
 
 	for _, test := range tests {

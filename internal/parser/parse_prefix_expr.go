@@ -22,7 +22,7 @@ func (p *Parser) parsePrefixExpr(
 		return p.parseParenthesizedExpr(recursionDepth)
 
 	case token.TokenTypeIdentifier:
-		return p.parseIdentifier(currentToken, recursionDepth)
+		return p.parseFunctionCallOrIdentifier(currentToken, recursionDepth)
 
 	default:
 		return nil, fmt.Errorf("unexpected token: %s", currentToken.Atom)
@@ -83,10 +83,14 @@ func (p *Parser) parseParenthesizedExpr(
 	return expr, nil
 }
 
-func (p *Parser) parseIdentifier(
-	identifierToken *token.Token,
+func (p *Parser) parseFunctionCallOrIdentifier(
+	functionCallOrIdentifierToken *token.Token,
 	recursionDepth int,
 ) (ast.ExprNode, error) {
+	if p.isEOF {
+		return p.parseIdentifier(functionCallOrIdentifierToken, recursionDepth+1)
+	}
+
 	nextToken, err := p.PeekNextToken()
 
 	if err != nil {
@@ -94,8 +98,15 @@ func (p *Parser) parseIdentifier(
 	}
 
 	if nextToken.TokenType == token.TokenTypeLParen {
-		return p.parseFunctionCall(identifierToken.Atom, recursionDepth+1)
+		return p.parseFunctionCall(functionCallOrIdentifierToken.Atom, recursionDepth+1)
 	}
 
+	return p.parseIdentifier(functionCallOrIdentifierToken, recursionDepth+1)
+}
+
+func (p *Parser) parseIdentifier(
+	identifierToken *token.Token,
+	_ int,
+) (ast.ExprNode, error) {
 	return nil, fmt.Errorf("identifiers are not yet supported: %s", identifierToken.Atom)
 }
