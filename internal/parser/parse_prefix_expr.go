@@ -88,7 +88,7 @@ func (p *Parser) parseFunctionCallOrIdentifier(
 	recursionDepth int,
 ) (ast.ExprNode, error) {
 	if p.isEOF {
-		return p.parseIdentifier(functionCallOrIdentifierToken, recursionDepth+1)
+		return p.parseIdentifier(functionCallOrIdentifierToken)
 	}
 
 	nextToken, err := p.PeekNextToken()
@@ -101,12 +101,5 @@ func (p *Parser) parseFunctionCallOrIdentifier(
 		return p.parseFunctionCall(functionCallOrIdentifierToken.Atom, recursionDepth+1)
 	}
 
-	return p.parseIdentifier(functionCallOrIdentifierToken, recursionDepth+1)
-}
-
-func (p *Parser) parseIdentifier(
-	identifierToken *token.Token,
-	_ int,
-) (ast.ExprNode, error) {
-	return nil, fmt.Errorf("identifiers are not yet supported: %s", identifierToken.Atom)
+	return p.parseIdentifier(functionCallOrIdentifierToken)
 }
