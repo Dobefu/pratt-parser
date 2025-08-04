@@ -76,16 +76,20 @@ func TestParseNumberErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input string
+		input    string
+		expected string
 	}{
 		{
-			input: "1__2",
+			input:    "1__2",
+			expected: "multiple consecutive underscores in number: 1__2",
 		},
 		{
-			input: "1..1",
+			input:    "1..1",
+			expected: "multiple decimal points in number: 1..1",
 		},
 		{
-			input: "1.",
+			input:    "1.",
+			expected: "trailing character in number: 1.",
 		},
 	}
 
@@ -93,7 +97,15 @@ func TestParseNumberErr(t *testing.T) {
 		_, err := NewTokenizer(test.input).Tokenize()
 
 		if err == nil {
-			t.Fatalf("expected error for %s, got none", test.input)
+			t.Errorf("expected error for %s, got none", test.input)
+		}
+
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

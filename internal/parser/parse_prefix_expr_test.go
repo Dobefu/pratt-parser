@@ -50,28 +50,36 @@ func TestParsePrefixExprErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input string
+		input    string
+		expected string
 	}{
 		{
-			input: "+",
+			input:    "+",
+			expected: "cannot get next token after EOF",
 		},
 		{
-			input: "++",
+			input:    "++",
+			expected: "cannot get next token after EOF",
 		},
 		{
-			input: "(",
+			input:    "(",
+			expected: "cannot get next token after EOF",
 		},
 		{
-			input: ")",
+			input:    ")",
+			expected: "unexpected token: )",
 		},
 		{
-			input: "(1 + 1",
+			input:    "(1 + 1",
+			expected: "expected ')', but got EOF",
 		},
 		{
-			input: "(1 + 1 +",
+			input:    "(1 + 1 +",
+			expected: "cannot get next token after EOF",
 		},
 		{
-			input: "(1 + 1 (",
+			input:    "(1 + 1 (",
+			expected: "expected ')', got: (",
 		},
 	}
 
@@ -80,6 +88,14 @@ func TestParsePrefixExprErr(t *testing.T) {
 
 		if err == nil {
 			t.Errorf("expected error for %s, got none", test.input)
+		}
+
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

@@ -37,10 +37,12 @@ func TestGetNextErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input string
+		input    string
+		expected string
 	}{
 		{
-			input: "\xFF",
+			input:    "\xFF",
+			expected: "invalid UTF-8 sequence",
 		},
 	}
 
@@ -50,6 +52,14 @@ func TestGetNextErr(t *testing.T) {
 
 		if err == nil {
 			t.Errorf("expected error, got nil")
+		}
+
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

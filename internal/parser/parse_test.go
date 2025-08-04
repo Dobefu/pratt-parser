@@ -69,19 +69,24 @@ func TestParseErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input string
+		input    string
+		expected string
 	}{
 		{
-			input: "",
+			input:    "",
+			expected: "no tokens to parse",
 		},
 		{
-			input: "1 +",
+			input:    "1 +",
+			expected: "cannot get next token after EOF",
 		},
 		{
-			input: "1 + 2 *",
+			input:    "1 + 2 *",
+			expected: "cannot peek next character after EOF",
 		},
 		{
-			input: "/ 1",
+			input:    "/ 1",
+			expected: "unexpected token: /",
 		},
 	}
 
@@ -90,6 +95,14 @@ func TestParseErr(t *testing.T) {
 
 		if err == nil {
 			t.Errorf("expected error for %s, got none", test.input)
+		}
+
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

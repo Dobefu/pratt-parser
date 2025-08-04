@@ -53,7 +53,8 @@ func TestEvaluatePrefixExprErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input *ast.PrefixExpr
+		input    *ast.PrefixExpr
+		expected string
 	}{
 		{
 			input: &ast.PrefixExpr{
@@ -63,6 +64,7 @@ func TestEvaluatePrefixExprErr(t *testing.T) {
 				},
 				Operand: nil,
 			},
+			expected: "unknown node type: <nil>",
 		},
 	}
 
@@ -71,6 +73,14 @@ func TestEvaluatePrefixExprErr(t *testing.T) {
 
 		if err == nil {
 			t.Errorf("expected error, got nil")
+		}
+
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

@@ -111,28 +111,36 @@ func TestTokenizeErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input string
+		input    string
+		expected string
 	}{
 		{
-			input: "1e",
+			input:    "1e",
+			expected: "trailing character in number: 1e",
 		},
 		{
-			input: "1e-",
+			input:    "1e-",
+			expected: "trailing character in number: 1e-",
 		},
 		{
-			input: "1e-r",
+			input:    "1e-r",
+			expected: "trailing character in number: 1e-r",
 		},
 		{
-			input: "1e6e6",
+			input:    "1e6e6",
+			expected: "multiple exponent signs in number: 1e6e6",
 		},
 		{
-			input: "1e6er",
+			input:    "1e6er",
+			expected: "trailing character in number: 1e6er",
 		},
 		{
-			input: "💔",
+			input:    "💔",
+			expected: "unexpected character: 💔 at position 1",
 		},
 		{
-			input: "*",
+			input:    "*",
+			expected: "cannot peek next character after EOF",
 		},
 	}
 
@@ -141,6 +149,14 @@ func TestTokenizeErr(t *testing.T) {
 
 		if err == nil {
 			t.Fatalf("expected error, got none for input %s", test.input)
+		}
+
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

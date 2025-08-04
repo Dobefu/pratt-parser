@@ -99,7 +99,8 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input *ast.BinaryExpr
+		input    *ast.BinaryExpr
+		expected string
 	}{
 		{
 			input: &ast.BinaryExpr{
@@ -110,6 +111,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationAdd,
 				},
 			},
+			expected: "unknown node type: <nil>",
 		},
 		{
 			input: &ast.BinaryExpr{
@@ -120,6 +122,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationAdd,
 				},
 			},
+			expected: "unknown node type: <nil>",
 		},
 		{
 			input: &ast.BinaryExpr{
@@ -130,6 +133,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationDiv,
 				},
 			},
+			expected: "division by zero",
 		},
 		{
 			input: &ast.BinaryExpr{
@@ -140,18 +144,23 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationMod,
 				},
 			},
+			expected: "modulo by zero",
 		},
 	}
 
 	for _, test := range tests {
-		result, err := NewEvaluator().evaluateBinaryExpr(test.input)
+		_, err := NewEvaluator().evaluateBinaryExpr(test.input)
 
 		if err == nil {
 			t.Errorf("expected error, got nil")
 		}
 
-		if result != 0 {
-			t.Errorf("expected 0, got %f", result)
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

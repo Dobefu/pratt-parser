@@ -8,7 +8,10 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/ast"
 )
 
-func evaluateFunctionCallCreateFunctionCall(functionName string, arguments ...ast.ExprNode) ast.ExprNode {
+func evaluateFunctionCallCreateFunctionCall(
+	functionName string,
+	arguments ...ast.ExprNode,
+) ast.ExprNode {
 	return &ast.FunctionCall{
 		FunctionName: functionName,
 		Arguments:    arguments,
@@ -133,7 +136,11 @@ func TestEvaluateFunctionCallErr(t *testing.T) {
 		}
 
 		if err.Error() != test.expected {
-			t.Errorf("expected error %v, got %v", test.expected, err.Error())
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }

@@ -60,18 +60,21 @@ func TestMainErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input string
+		input    string
+		expected string
 	}{
 		{
-			input: "",
+			input:    "",
+			expected: "usage: go run main.go <expression>",
 		},
 		{
-			input: "1 +",
+			input:    "1 +",
+			expected: "cannot get next token after EOF",
 		},
 	}
 
 	for _, test := range tests {
-		hasError := false
+		var mainErr error
 		args := []string{os.Args[0]}
 
 		if test.input != "" {
@@ -80,8 +83,8 @@ func TestMainErr(t *testing.T) {
 
 		main := &Main{
 			args: args,
-			onError: func(_ error) {
-				hasError = true
+			onError: func(err error) {
+				mainErr = err
 			},
 
 			result: 0,
@@ -89,8 +92,16 @@ func TestMainErr(t *testing.T) {
 
 		main.Run()
 
-		if !hasError {
+		if mainErr == nil {
 			t.Errorf("expected error, got none for input %s", test.input)
+		}
+
+		if mainErr.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				mainErr.Error(),
+			)
 		}
 	}
 }

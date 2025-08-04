@@ -60,25 +60,28 @@ func TestParseFunctionCallErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input string
+		input    string
+		expected string
 	}{
 		{
-			input: "",
+			input:    "",
+			expected: "cannot get next token after EOF",
 		},
 		{
-			input: "(",
+			input:    "(",
+			expected: "cannot peek next token after EOF",
 		},
 		{
-			input: "abs",
+			input:    "abs",
+			expected: "expected '(', got: abs",
 		},
 		{
-			input: "abs",
+			input:    "(1",
+			expected: "cannot peek next token after EOF",
 		},
 		{
-			input: "(1",
-		},
-		{
-			input: "(1,",
+			input:    "(1,",
+			expected: "cannot get next token after EOF",
 		},
 	}
 
@@ -97,6 +100,14 @@ func TestParseFunctionCallErr(t *testing.T) {
 
 		if err == nil {
 			t.Errorf("expected error, got none for input %s", test.input)
+		}
+
+		if err.Error() != test.expected {
+			t.Errorf(
+				"expected error \"%v\", got \"%v\"",
+				test.expected,
+				err.Error(),
+			)
 		}
 	}
 }
