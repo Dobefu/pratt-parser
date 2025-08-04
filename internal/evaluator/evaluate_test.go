@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"math"
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
@@ -27,7 +28,7 @@ func TestEvaluate(t *testing.T) {
 						Operand: &ast.FunctionCall{
 							FunctionName: "abs",
 							Arguments: []ast.ExprNode{
-								&ast.NumberLiteral{Value: "5"},
+								&ast.Identifier{Value: "PI"},
 							},
 						},
 					},
@@ -41,7 +42,7 @@ func TestEvaluate(t *testing.T) {
 					TokenType: token.TokenTypeOperationAdd,
 				},
 			},
-			expected: 5,
+			expected: 5 + math.Abs(-5+math.Pi),
 		},
 	}
 
