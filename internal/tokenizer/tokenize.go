@@ -158,7 +158,7 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
 	}, nil
 }
 
-func (t *Tokenizer) parseUnknownChar(next byte) (token.Token, error) {
+func (t *Tokenizer) parseUnknownChar(next rune) (token.Token, error) {
 	if charutil.IsLetter(rune(next)) || next == '_' {
 		return t.parseIdentifier(rune(next))
 	}

@@ -17,15 +17,15 @@ const (
 	NumberFlagExponent
 )
 
-func (t *Tokenizer) parseNumber(current byte) (token.Token, error) {
+func (t *Tokenizer) parseNumber(current rune) (token.Token, error) {
 	errMsg := ""
 
 	var number strings.Builder
 	var literalNumber strings.Builder
-	number.WriteByte(current)
-	literalNumber.WriteByte(current)
+	number.WriteRune(current)
+	literalNumber.WriteRune(current)
 
-	lastByte := current
+	lastChar := current
 	isNumberValid := true
 
 	var numberFlags NumberFlags
@@ -42,11 +42,11 @@ GETNEXT:
 			return token.Token{}, err
 		}
 
-		literalNumber.WriteByte(next)
+		literalNumber.WriteRune(next)
 
 		switch next {
 		case '_':
-			errMsg = t.handleUnderscore(lastByte, errMsg)
+			errMsg = t.handleUnderscore(lastChar, errMsg)
 
 		case '.':
 			errMsg = t.handleDecimalPoint(&numberFlags, &number, errMsg)
@@ -76,7 +76,7 @@ GETNEXT:
 				&numberFlags,
 				&number,
 				&isNumberValid,
-				lastByte,
+				lastChar,
 				next,
 				errMsg,
 			)
@@ -95,10 +95,10 @@ GETNEXT:
 			return token.Token{}, err
 		}
 
-		lastByte = next
+		lastChar = next
 	}
 
-	if !isLastByteValid(lastByte) {
+	if !isLastCharValid(lastChar) {
 		errMsg = "trailing character in number: %s"
 	}
 
@@ -113,10 +113,10 @@ GETNEXT:
 }
 
 func (t *Tokenizer) handleUnderscore(
-	lastByte byte,
+	lastChar rune,
 	currentErrMsg string,
 ) string {
-	if lastByte == '_' {
+	if lastChar == '_' {
 		return "multiple consecutive underscores in number: %s"
 	}
 
@@ -133,7 +133,7 @@ func (t *Tokenizer) handleDecimalPoint(
 	}
 
 	*numberFlags |= NumberFlagFloat
-	number.WriteByte('.')
+	number.WriteRune('.')
 
 	return currentErrMsg
 }
@@ -142,14 +142,14 @@ func (t *Tokenizer) handleDigit(
 	numberFlags *NumberFlags,
 	number *strings.Builder,
 	isNumberValid *bool,
-	next byte,
+	next rune,
 	currentErrMsg string,
 ) string {
 	if !*isNumberValid && (*numberFlags&NumberFlagExponent) != 0 {
 		*isNumberValid = true
 	}
 
-	number.WriteByte(next)
+	number.WriteRune(next)
 
 	return currentErrMsg
 }
@@ -158,7 +158,7 @@ func (t *Tokenizer) handleExponent(
 	numberFlags *NumberFlags,
 	number *strings.Builder,
 	isNumberValid *bool,
-	next byte,
+	next rune,
 	currentErrMsg string,
 ) string {
 	if !*isNumberValid || (*numberFlags&NumberFlagExponent) != 0 {
@@ -168,7 +168,7 @@ func (t *Tokenizer) handleExponent(
 	*numberFlags |= NumberFlagExponent
 	*isNumberValid = false
 
-	number.WriteByte(next)
+	number.WriteRune(next)
 
 	return currentErrMsg
 }
@@ -177,29 +177,29 @@ func (t *Tokenizer) handleAdditionAndSubtraction(
 	numberFlags *NumberFlags,
 	number *strings.Builder,
 	isNumberValid *bool,
-	lastByte byte,
-	next byte,
+	lastChar rune,
+	next rune,
 	currentErrMsg string,
 ) (string, bool) {
 	if (*numberFlags & NumberFlagExponent) == 0 {
 		return currentErrMsg, true
 	}
 
-	if lastByte == '+' || lastByte == '-' {
+	if lastChar == '+' || lastChar == '-' {
 		return "multiple consecutive addition or subtraction signs in exponent: %s", true
 	}
 
 	*isNumberValid = false
 
 	if next == '-' {
-		number.WriteByte(next)
+		number.WriteRune(next)
 	}
 
 	return currentErrMsg, false
 }
 
-func isLastByteValid(lastByte byte) bool {
-	switch lastByte {
+func isLastCharValid(lastChar rune) bool {
+	switch lastChar {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		return true
 

@@ -1,6 +1,8 @@
 package evaluator
 
-import "math"
+import (
+	"math"
+)
 
 var functionRegistry = map[string]functionInfo{
 	"abs": {
