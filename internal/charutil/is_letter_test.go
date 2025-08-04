@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestIsDigit(t *testing.T) {
+func TestIsLetter(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -12,19 +12,19 @@ func TestIsDigit(t *testing.T) {
 		expected bool
 	}{
 		{
-			input:    '0',
-			expected: true,
-		},
-		{
-			input:    '9',
-			expected: true,
-		},
-		{
 			input:    'a',
+			expected: true,
+		},
+		{
+			input:    'Z',
+			expected: true,
+		},
+		{
+			input:    '0',
 			expected: false,
 		},
 		{
-			input:    'z',
+			input:    '9',
 			expected: false,
 		},
 		{
@@ -34,8 +34,8 @@ func TestIsDigit(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if IsDigit(test.input) != test.expected {
-			t.Errorf("expected %t, got %t", test.expected, IsDigit(test.input))
+		if IsLetter(test.input) != test.expected {
+			t.Errorf("expected %t, got %t", test.expected, IsLetter(test.input))
 		}
 	}
 }
