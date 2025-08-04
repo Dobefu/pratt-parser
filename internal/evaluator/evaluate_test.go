@@ -24,7 +24,12 @@ func TestEvaluate(t *testing.T) {
 							Atom:      "-",
 							TokenType: token.TokenTypeOperationSub,
 						},
-						Operand: &ast.NumberLiteral{Value: "5"},
+						Operand: &ast.FunctionCall{
+							FunctionName: "abs",
+							Arguments: []ast.ExprNode{
+								&ast.NumberLiteral{Value: "5"},
+							},
+						},
 					},
 					Operator: token.Token{
 						Atom:      "+",
