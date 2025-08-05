@@ -1,9 +1,11 @@
 package tokenizer
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -127,31 +129,31 @@ func TestTokenizeErr(t *testing.T) {
 	}{
 		{
 			input:    "1e",
-			expected: "trailing character in number: 1e",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberTrailingChar, "1e"),
 		},
 		{
 			input:    "1e-",
-			expected: "trailing character in number: 1e-",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberTrailingChar, "1e-"),
 		},
 		{
 			input:    "1e-r",
-			expected: "trailing character in number: 1e-r",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberTrailingChar, "1e-r"),
 		},
 		{
 			input:    "1e6e6",
-			expected: "multiple exponent signs in number: 1e6e6",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberMultipleExponentSigns, "1e6e6"),
 		},
 		{
 			input:    "1e6er",
-			expected: "trailing character in number: 1e6er",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberTrailingChar, "1e6er"),
 		},
 		{
 			input:    "💔",
-			expected: "unexpected character: 💔 at position 1",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedChar, "💔", 1),
 		},
 		{
 			input:    "*",
-			expected: "unexpected end of expression",
+			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 	}
 

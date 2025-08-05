@@ -1,9 +1,8 @@
 package parser
 
 import (
-	"fmt"
-
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -15,13 +14,16 @@ func (p *Parser) parseFunctionCall(functionName string, recursionDepth int) (ast
 	}
 
 	if lparenToken.TokenType != token.TokenTypeLParen {
-		return nil, fmt.Errorf("expected '(', got: %s", lparenToken.Atom)
+		return nil, errorutil.NewError(
+			errorutil.ErrorMsgExpectedOpenParen,
+			lparenToken.Atom,
+		)
 	}
 
 	nextToken, err := p.PeekNextToken()
 
 	if err != nil {
-		return nil, fmt.Errorf("expected ')', but the expression ended")
+		return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
 	}
 
 	var args []ast.ExprNode
@@ -41,7 +43,7 @@ func (p *Parser) parseFunctionCall(functionName string, recursionDepth int) (ast
 	}
 
 	if rparenToken.TokenType != token.TokenTypeRParen {
-		return nil, fmt.Errorf("expected ')', got: %s", rparenToken.Atom)
+		return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
 	}
 
 	return &ast.FunctionCall{
@@ -74,7 +76,7 @@ func (p *Parser) parseFunctionCallArguments(
 		nextToken, err := p.PeekNextToken()
 
 		if err != nil {
-			return nil, fmt.Errorf("expected ')', but the expression ended")
+			return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
 		}
 
 		if nextToken.TokenType == token.TokenTypeRParen {
@@ -82,7 +84,10 @@ func (p *Parser) parseFunctionCallArguments(
 		}
 
 		if nextToken.TokenType != token.TokenTypeComma {
-			return nil, fmt.Errorf("unexpected token: %s", nextToken.Atom)
+			return nil, errorutil.NewError(
+				errorutil.ErrorMsgUnexpectedToken,
+				nextToken.Atom,
+			)
 		}
 
 		_, err = p.GetNextToken()

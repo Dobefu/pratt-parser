@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 )
 
 func evaluateFunctionCallCreateFunctionCall(
@@ -125,7 +126,7 @@ func TestEvaluateFunctionCallErr(t *testing.T) {
 				"bogus",
 				&ast.NumberLiteral{Value: "1"},
 			),
-			expected: "undefined function: bogus",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUndefinedFunction, "bogus"),
 		},
 		{
 			input: evaluateFunctionCallCreateFunctionCall(
@@ -133,7 +134,7 @@ func TestEvaluateFunctionCallErr(t *testing.T) {
 				&ast.NumberLiteral{Value: "1"},
 				&ast.NumberLiteral{Value: "1"},
 			),
-			expected: "abs() expects exactly 1 argument(s), but got 2",
+			expected: fmt.Sprintf(errorutil.ErrorMsgFunctionNumArgs, "abs", 1, 2),
 		},
 		{
 			input: evaluateFunctionCallCreateFunctionCall(
@@ -148,7 +149,7 @@ func TestEvaluateFunctionCallErr(t *testing.T) {
 		_, err := NewEvaluator().Evaluate(test.input)
 
 		if err == nil {
-			t.Errorf("expected error, got nil")
+			t.Fatalf("expected error, got nil")
 		}
 
 		if err.Error() != test.expected {

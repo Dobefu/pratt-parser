@@ -1,10 +1,12 @@
 package evaluator
 
 import (
+	"fmt"
 	"math"
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 )
 
 func TestEvaluateIdentifier(t *testing.T) {
@@ -54,7 +56,7 @@ func TestEvaluateIdentifierErr(t *testing.T) {
 	}{
 		{
 			input:    &ast.Identifier{Value: "bogus"},
-			expected: "undefined identifier: bogus",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUndefinedIdentifier, "bogus"),
 		},
 	}
 
@@ -62,12 +64,12 @@ func TestEvaluateIdentifierErr(t *testing.T) {
 		_, err := NewEvaluator().evaluateIdentifier(test.input)
 
 		if err == nil {
-			t.Errorf("expected error, got nil")
+			t.Fatalf("expected error, got nil")
 		}
 
 		if err.Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
 				err.Error(),
 			)

@@ -1,9 +1,11 @@
 package evaluator
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -64,7 +66,7 @@ func TestEvaluatePrefixExprErr(t *testing.T) {
 				},
 				Operand: nil,
 			},
-			expected: "unknown node type: <nil>",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnknownNodeType, nil),
 		},
 	}
 
@@ -72,12 +74,12 @@ func TestEvaluatePrefixExprErr(t *testing.T) {
 		_, err := NewEvaluator().evaluatePrefixExpr(test.input)
 
 		if err == nil {
-			t.Errorf("expected error, got nil")
+			t.Fatalf("expected error, got nil")
 		}
 
 		if err.Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
 				err.Error(),
 			)

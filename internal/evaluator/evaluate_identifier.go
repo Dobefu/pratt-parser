@@ -1,9 +1,8 @@
 package evaluator
 
 import (
-	"fmt"
-
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 )
 
 type identifierInfo struct {
@@ -16,7 +15,7 @@ func (e *Evaluator) evaluateIdentifier(
 	identifier, ok := identifierRegistry[i.Value]
 
 	if !ok {
-		return 0, fmt.Errorf("undefined identifier: %s", i.Value)
+		return 0, errorutil.NewError(errorutil.ErrorMsgUndefinedIdentifier, i.Value)
 	}
 
 	return identifier.handler()

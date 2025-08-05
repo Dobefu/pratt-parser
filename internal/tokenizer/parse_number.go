@@ -1,9 +1,9 @@
 package tokenizer
 
 import (
-	"fmt"
 	"strings"
 
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -18,7 +18,7 @@ const (
 )
 
 func (t *Tokenizer) parseNumber(current rune) (token.Token, error) {
-	errMsg := ""
+	var errMsg errorutil.ErrorMsg
 
 	var number strings.Builder
 	var literalNumber strings.Builder
@@ -99,11 +99,11 @@ GETNEXT:
 	}
 
 	if !isLastCharValid(lastChar) {
-		errMsg = "trailing character in number: %s"
+		errMsg = errorutil.ErrorMsgNumberTrailingChar
 	}
 
 	if errMsg != "" {
-		return token.Token{}, fmt.Errorf(errMsg, literalNumber.String())
+		return token.Token{}, errorutil.NewError(errMsg, literalNumber.String())
 	}
 
 	return token.Token{
@@ -114,10 +114,10 @@ GETNEXT:
 
 func (t *Tokenizer) handleUnderscore(
 	lastChar rune,
-	currentErrMsg string,
-) string {
+	currentErrMsg errorutil.ErrorMsg,
+) errorutil.ErrorMsg {
 	if lastChar == '_' {
-		return "multiple consecutive underscores in number: %s"
+		return errorutil.ErrorMsgNumberMultipleUnderscores
 	}
 
 	return currentErrMsg
@@ -126,10 +126,10 @@ func (t *Tokenizer) handleUnderscore(
 func (t *Tokenizer) handleDecimalPoint(
 	numberFlags *NumberFlags,
 	number *strings.Builder,
-	currentErrMsg string,
-) string {
+	currentErrMsg errorutil.ErrorMsg,
+) errorutil.ErrorMsg {
 	if (*numberFlags & NumberFlagFloat) != 0 {
-		return "multiple decimal points in number: %s"
+		return errorutil.ErrorMsgNumberMultipleDecimalPoints
 	}
 
 	*numberFlags |= NumberFlagFloat
@@ -143,8 +143,8 @@ func (t *Tokenizer) handleDigit(
 	number *strings.Builder,
 	isNumberValid *bool,
 	next rune,
-	currentErrMsg string,
-) string {
+	currentErrMsg errorutil.ErrorMsg,
+) errorutil.ErrorMsg {
 	if !*isNumberValid && (*numberFlags&NumberFlagExponent) != 0 {
 		*isNumberValid = true
 	}
@@ -159,10 +159,10 @@ func (t *Tokenizer) handleExponent(
 	number *strings.Builder,
 	isNumberValid *bool,
 	next rune,
-	currentErrMsg string,
-) string {
+	currentErrMsg errorutil.ErrorMsg,
+) errorutil.ErrorMsg {
 	if !*isNumberValid || (*numberFlags&NumberFlagExponent) != 0 {
-		return "multiple exponent signs in number: %s"
+		return errorutil.ErrorMsgNumberMultipleExponentSigns
 	}
 
 	*numberFlags |= NumberFlagExponent
@@ -179,14 +179,14 @@ func (t *Tokenizer) handleAdditionAndSubtraction(
 	isNumberValid *bool,
 	lastChar rune,
 	next rune,
-	currentErrMsg string,
-) (string, bool) {
+	currentErrMsg errorutil.ErrorMsg,
+) (errorutil.ErrorMsg, bool) {
 	if (*numberFlags & NumberFlagExponent) == 0 {
 		return currentErrMsg, true
 	}
 
 	if lastChar == '+' || lastChar == '-' {
-		return "multiple consecutive addition or subtraction signs in exponent: %s", true
+		return errorutil.ErrorMsgNumberMultipleConsecutiveExponentSigns, true
 	}
 
 	*isNumberValid = false

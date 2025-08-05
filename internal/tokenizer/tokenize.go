@@ -1,9 +1,8 @@
 package tokenizer
 
 import (
-	"fmt"
-
 	"github.com/Dobefu/pratt-parser/internal/charutil"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -163,8 +162,8 @@ func (t *Tokenizer) parseUnknownChar(next rune) (token.Token, error) {
 		return t.parseIdentifier(rune(next))
 	}
 
-	return token.Token{}, fmt.Errorf(
-		"unexpected character: %s at position %d",
+	return token.Token{}, errorutil.NewError(
+		errorutil.ErrorMsgUnexpectedChar,
 		string(next),
 		t.expIdx,
 	)

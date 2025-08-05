@@ -1,9 +1,11 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -68,7 +70,7 @@ func TestParsePrefixExpr(t *testing.T) {
 func TestParsePrefixExprErr(t *testing.T) {
 	t.Parallel()
 
-	errNextTokenAfterEOF := "unexpected end of expression"
+	errNextTokenAfterEOF := errorutil.ErrorMsgUnexpectedEOF
 
 	tests := []struct {
 		input    []token.Token
@@ -91,7 +93,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 			input: []token.Token{
 				{Atom: ")", TokenType: token.TokenTypeRParen},
 			},
-			expected: "unexpected token: ')'",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, ")"),
 		},
 		{
 			input: []token.Token{
@@ -100,7 +102,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
-			expected: "expected ')', but got EOF",
+			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
 		},
 		{
 			input: []token.Token{
@@ -120,7 +122,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 			},
-			expected: "expected ')', got: (",
+			expected: fmt.Sprintf(errorutil.ErrorMsgExpectedCloseParen, "("),
 		},
 	}
 

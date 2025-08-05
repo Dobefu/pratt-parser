@@ -1,9 +1,11 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 	"github.com/Dobefu/pratt-parser/internal/tokenizer"
 )
@@ -63,7 +65,7 @@ func TestParseBinaryExprErr(t *testing.T) {
 			},
 			leftExpr:   nil,
 			rightToken: &token.Token{Atom: "1", TokenType: token.TokenTypeNumber},
-			expected:   "unexpected token: '+'",
+			expected:   fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, "+"),
 		},
 		{
 			operatorToken: &token.Token{
@@ -72,7 +74,7 @@ func TestParseBinaryExprErr(t *testing.T) {
 			},
 			leftExpr:   &ast.NumberLiteral{Value: "1"},
 			rightToken: &token.Token{Atom: "/", TokenType: token.TokenTypeOperationDiv},
-			expected:   "unexpected token: '/'",
+			expected:   fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, "/"),
 		},
 	}
 

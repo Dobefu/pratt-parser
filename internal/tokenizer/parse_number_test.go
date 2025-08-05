@@ -1,9 +1,11 @@
 package tokenizer
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -81,15 +83,15 @@ func TestParseNumberErr(t *testing.T) {
 	}{
 		{
 			input:    "1__2",
-			expected: "multiple consecutive underscores in number: 1__2",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberMultipleUnderscores, "1__2"),
 		},
 		{
 			input:    "1..1",
-			expected: "multiple decimal points in number: 1..1",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberMultipleDecimalPoints, "1..1"),
 		},
 		{
 			input:    "1.",
-			expected: "trailing character in number: 1.",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberTrailingChar, "1."),
 		},
 	}
 
@@ -97,12 +99,12 @@ func TestParseNumberErr(t *testing.T) {
 		_, err := NewTokenizer(test.input).Tokenize()
 
 		if err == nil {
-			t.Errorf("expected error for %s, got none", test.input)
+			t.Fatalf("expected error for %s, got none", test.input)
 		}
 
 		if err.Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
 				err.Error(),
 			)

@@ -3,6 +3,8 @@ package main
 import (
 	"os"
 	"testing"
+
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 )
 
 func TestMain(t *testing.T) {
@@ -69,7 +71,7 @@ func TestMainErr(t *testing.T) {
 		},
 		{
 			input:    "1 +",
-			expected: "unexpected end of expression",
+			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 	}
 

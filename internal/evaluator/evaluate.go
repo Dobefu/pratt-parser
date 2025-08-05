@@ -1,9 +1,8 @@
 package evaluator
 
 import (
-	"fmt"
-
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 )
 
 // Evaluate runs the evaluation logic.
@@ -25,6 +24,6 @@ func (e *Evaluator) Evaluate(currentAst ast.ExprNode) (float64, error) {
 		return e.evaluateIdentifier(node)
 
 	default:
-		return 0, fmt.Errorf("unknown node type: %T", node)
+		return 0, errorutil.NewError(errorutil.ErrorMsgUnknownNodeType, node)
 	}
 }

@@ -1,10 +1,12 @@
 package parser
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -62,34 +64,32 @@ func TestParseFunctionCall(t *testing.T) {
 func TestParseFunctionCallErr(t *testing.T) {
 	t.Parallel()
 
-	errUnexpectedEOF := "expected ')', but the expression ended"
-
 	tests := []struct {
 		input    []token.Token
 		expected string
 	}{
 		{
 			input:    []token.Token{},
-			expected: "unexpected end of expression",
+			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 		{
 			input: []token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 			},
-			expected: errUnexpectedEOF,
+			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
 		},
 		{
 			input: []token.Token{
 				{Atom: "abs", TokenType: token.TokenTypeIdentifier},
 			},
-			expected: "expected '(', got: abs",
+			expected: fmt.Sprintf(errorutil.ErrorMsgExpectedOpenParen, "abs"),
 		},
 		{
 			input: []token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
-			expected: errUnexpectedEOF,
+			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
 		},
 		{
 			input: []token.Token{
@@ -97,7 +97,7 @@ func TestParseFunctionCallErr(t *testing.T) {
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: ",", TokenType: token.TokenTypeComma},
 			},
-			expected: "unexpected end of expression",
+			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 	}
 

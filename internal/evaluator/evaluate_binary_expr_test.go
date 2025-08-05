@@ -1,9 +1,11 @@
 package evaluator
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -111,7 +113,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationAdd,
 				},
 			},
-			expected: "unknown node type: <nil>",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnknownNodeType, nil),
 		},
 		{
 			input: &ast.BinaryExpr{
@@ -122,7 +124,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationAdd,
 				},
 			},
-			expected: "unknown node type: <nil>",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnknownNodeType, nil),
 		},
 		{
 			input: &ast.BinaryExpr{
@@ -133,7 +135,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationDiv,
 				},
 			},
-			expected: "division by zero",
+			expected: errorutil.ErrorMsgDivByZero,
 		},
 		{
 			input: &ast.BinaryExpr{
@@ -144,7 +146,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeOperationMod,
 				},
 			},
-			expected: "modulo by zero",
+			expected: errorutil.ErrorMsgModByZero,
 		},
 		{
 			input: &ast.BinaryExpr{
@@ -155,7 +157,7 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 					TokenType: token.TokenTypeComma,
 				},
 			},
-			expected: "unknown operator: ,",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnknownOperator, ","),
 		},
 	}
 
@@ -163,12 +165,12 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 		_, err := NewEvaluator().evaluateBinaryExpr(test.input)
 
 		if err == nil {
-			t.Errorf("expected error, got nil")
+			t.Fatalf("expected error, got nil")
 		}
 
 		if err.Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
 				err.Error(),
 			)

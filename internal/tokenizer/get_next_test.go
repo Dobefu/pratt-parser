@@ -1,6 +1,10 @@
 package tokenizer
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
+)
 
 func TestGetNext(t *testing.T) {
 	t.Parallel()
@@ -42,7 +46,7 @@ func TestGetNextErr(t *testing.T) {
 	}{
 		{
 			input:    "\xFF",
-			expected: "invalid character in expression",
+			expected: errorutil.ErrorMsgInvalidUTF8Char,
 		},
 	}
 
@@ -51,7 +55,7 @@ func TestGetNextErr(t *testing.T) {
 		_, err := tokenizer.GetNext()
 
 		if err == nil {
-			t.Errorf("expected error, got nil")
+			t.Fatalf("expected error, got nil")
 		}
 
 		if err.Error() != test.expected {

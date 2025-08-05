@@ -1,8 +1,10 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -74,13 +76,13 @@ func TestParseErr(t *testing.T) {
 	}{
 		{
 			input:    []token.Token{},
-			expected: "empty expression",
+			expected: errorutil.ErrorMsgEmptyExpression,
 		},
 		{
 			input: []token.Token{
 				{Atom: "_", TokenType: token.TokenTypeNumber},
 			},
-			expected: "unexpected end of expression",
+			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 		{
 			input: []token.Token{
@@ -88,14 +90,14 @@ func TestParseErr(t *testing.T) {
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 			},
-			expected: "unexpected end of expression",
+			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 		{
 			input: []token.Token{
 				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
-			expected: "unexpected token: '/'",
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, "/"),
 		},
 	}
 

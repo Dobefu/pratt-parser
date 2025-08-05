@@ -1,10 +1,10 @@
 package evaluator
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -22,11 +22,11 @@ func (e *Evaluator) evaluateBinaryExpr(node *ast.BinaryExpr) (float64, error) {
 	}
 
 	if node.Operator.TokenType == token.TokenTypeOperationDiv && rightEvaluated == 0 {
-		return 0, fmt.Errorf("division by zero")
+		return 0, errorutil.NewError(errorutil.ErrorMsgDivByZero)
 	}
 
 	if node.Operator.TokenType == token.TokenTypeOperationMod && rightEvaluated == 0 {
-		return 0, fmt.Errorf("modulo by zero")
+		return 0, errorutil.NewError(errorutil.ErrorMsgModByZero)
 	}
 
 	switch node.Operator.TokenType {
@@ -49,6 +49,9 @@ func (e *Evaluator) evaluateBinaryExpr(node *ast.BinaryExpr) (float64, error) {
 		return math.Pow(leftEvaluated, rightEvaluated), nil
 
 	default:
-		return 0, fmt.Errorf("unknown operator: %s", node.Operator.Atom)
+		return 0, errorutil.NewError(
+			errorutil.ErrorMsgUnknownOperator,
+			node.Operator.Atom,
+		)
 	}
 }

@@ -1,9 +1,8 @@
 package evaluator
 
 import (
-	"fmt"
-
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 )
 
 type functionHandler func([]float64) (float64, error)
@@ -19,7 +18,10 @@ func (e *Evaluator) evaluateFunctionCall(
 	function, ok := functionRegistry[fc.FunctionName]
 
 	if !ok {
-		return 0, fmt.Errorf("undefined function: %s", fc.FunctionName)
+		return 0, errorutil.NewError(
+			errorutil.ErrorMsgUndefinedFunction,
+			fc.FunctionName,
+		)
 	}
 
 	argValues, err := e.evaluateArguments(
@@ -53,8 +55,8 @@ func (e *Evaluator) evaluateArguments(
 	}
 
 	if expectedCount > 0 && len(argValues) != expectedCount {
-		return nil, fmt.Errorf(
-			"%s() expects exactly %d argument(s), but got %d",
+		return nil, errorutil.NewError(
+			errorutil.ErrorMsgFunctionNumArgs,
 			functionName,
 			expectedCount,
 			len(argValues),

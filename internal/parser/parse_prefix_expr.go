@@ -1,9 +1,8 @@
 package parser
 
 import (
-	"fmt"
-
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
@@ -25,7 +24,10 @@ func (p *Parser) parsePrefixExpr(
 		return p.parseFunctionCallOrIdentifier(currentToken, recursionDepth)
 
 	default:
-		return nil, fmt.Errorf("unexpected token: '%s'", currentToken.Atom)
+		return nil, errorutil.NewError(
+			errorutil.ErrorMsgUnexpectedToken,
+			currentToken.Atom,
+		)
 	}
 }
 
@@ -73,11 +75,14 @@ func (p *Parser) parseParenthesizedExpr(
 	rparenToken, err := p.GetNextToken()
 
 	if err != nil {
-		return nil, fmt.Errorf("expected ')', but got EOF")
+		return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
 	}
 
 	if rparenToken.TokenType != token.TokenTypeRParen {
-		return nil, fmt.Errorf("expected ')', got: %s", rparenToken.Atom)
+		return nil, errorutil.NewError(
+			errorutil.ErrorMsgExpectedCloseParen,
+			rparenToken.Atom,
+		)
 	}
 
 	return expr, nil
