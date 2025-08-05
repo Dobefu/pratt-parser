@@ -7,7 +7,7 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-const maxRecursionDepth = 1_000_000
+const maxRecursionDepth = 100_000
 
 func (p *Parser) parseExpr(
 	currentToken *token.Token,

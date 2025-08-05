@@ -4,6 +4,13 @@ import (
 	"math"
 )
 
+type functionHandler func([]float64) (float64, error)
+
+type functionInfo struct {
+	handler  functionHandler
+	argCount int
+}
+
 var functionRegistry = map[string]functionInfo{
 	"abs": {
 		argCount: 1,

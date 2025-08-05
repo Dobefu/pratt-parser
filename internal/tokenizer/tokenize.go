@@ -1,7 +1,8 @@
 package tokenizer
 
 import (
-	"github.com/Dobefu/pratt-parser/internal/charutil"
+	"unicode"
+
 	"github.com/Dobefu/pratt-parser/internal/errorutil"
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
@@ -134,9 +135,9 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
 			break
 		}
 
-		if charutil.IsLetter(rune(next)) ||
+		if unicode.IsLetter(rune(next)) ||
 			next == '_' ||
-			charutil.IsDigit(rune(next)) {
+			unicode.IsDigit(rune(next)) {
 			_, err = t.GetNext()
 
 			if err != nil {
@@ -158,7 +159,7 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
 }
 
 func (t *Tokenizer) parseUnknownChar(next rune) (token.Token, error) {
-	if charutil.IsLetter(rune(next)) || next == '_' {
+	if unicode.IsLetter(rune(next)) || next == '_' {
 		return t.parseIdentifier(rune(next))
 	}
 

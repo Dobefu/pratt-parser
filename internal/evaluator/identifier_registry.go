@@ -1,6 +1,12 @@
 package evaluator
 
-import "math"
+import (
+	"math"
+)
+
+type identifierInfo struct {
+	handler func() (float64, error)
+}
 
 var identifierRegistry = map[string]identifierInfo{
 	"PI": {

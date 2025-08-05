@@ -1,6 +1,8 @@
 package errorutil
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestErrorMsg(t *testing.T) {
 	t.Parallel()

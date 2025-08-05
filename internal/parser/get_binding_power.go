@@ -4,27 +4,35 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
+const (
+	bindingPowerParentheses    = 1000
+	bindingPowerUnary          = 300
+	bindingPowerPower          = 400
+	bindingPowerMultiplicative = 200
+	bindingPowerAdditive       = 100
+	bindingPowerDefault        = 0
+)
+
 // getBindingPower returns the binding power of the current token.
 func (p *Parser) getBindingPower(currentToken *token.Token, isUnary bool) int {
 	switch currentToken.TokenType {
 	case token.TokenTypeLParen, token.TokenTypeRParen:
-		return 1000
+		return bindingPowerParentheses
 
 	case token.TokenTypeOperationPow, token.TokenTypeOperationMod:
-		return 400
+		return bindingPowerPower
 
 	case token.TokenTypeOperationMul, token.TokenTypeOperationDiv:
-		return 200
+		return bindingPowerMultiplicative
 
 	case token.TokenTypeOperationAdd, token.TokenTypeOperationSub:
-
 		if isUnary {
-			return 300
+			return bindingPowerUnary
 		}
 
-		return 100
+		return bindingPowerAdditive
 
 	default:
-		return 0
+		return bindingPowerDefault
 	}
 }

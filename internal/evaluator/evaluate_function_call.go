@@ -5,13 +5,6 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/errorutil"
 )
 
-type functionHandler func([]float64) (float64, error)
-
-type functionInfo struct {
-	handler  functionHandler
-	argCount int
-}
-
 func (e *Evaluator) evaluateFunctionCall(
 	fc *ast.FunctionCall,
 ) (float64, error) {
