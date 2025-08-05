@@ -18,6 +18,18 @@ func TestEvaluateIdentifier(t *testing.T) {
 			input:    &ast.Identifier{Value: "PI"},
 			expected: math.Pi,
 		},
+		{
+			input:    &ast.Identifier{Value: "TAU"},
+			expected: math.Pi * 2,
+		},
+		{
+			input:    &ast.Identifier{Value: "E"},
+			expected: math.E,
+		},
+		{
+			input:    &ast.Identifier{Value: "PHI"},
+			expected: math.Phi,
+		},
 	}
 
 	for _, test := range tests {
