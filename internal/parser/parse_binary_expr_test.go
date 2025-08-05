@@ -51,34 +51,41 @@ func TestParseBinaryExprErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    []token.Token
-		expected string
+		operatorToken *token.Token
+		leftExpr      ast.ExprNode
+		rightToken    *token.Token
+		expected      string
 	}{
 		{
-			input:    []token.Token{},
-			expected: "no tokens to parse",
+			operatorToken: &token.Token{
+				Atom:      "+",
+				TokenType: token.TokenTypeOperationAdd,
+			},
+			leftExpr:   nil,
+			rightToken: &token.Token{Atom: "1", TokenType: token.TokenTypeNumber},
+			expected:   "unexpected token: '+'",
 		},
 		{
-			input: []token.Token{
-				{Atom: "1", TokenType: token.TokenTypeNumber},
-				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+			operatorToken: &token.Token{
+				Atom:      "/",
+				TokenType: token.TokenTypeOperationDiv,
 			},
-			expected: "cannot get next token after EOF",
-		},
-		{
-			input: []token.Token{
-				{Atom: "3", TokenType: token.TokenTypeNumber},
-				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
-			},
-			expected: "cannot get next token after EOF",
+			leftExpr:   &ast.NumberLiteral{Value: "1"},
+			rightToken: &token.Token{Atom: "/", TokenType: token.TokenTypeOperationDiv},
+			expected:   "unexpected token: '/'",
 		},
 	}
 
 	for _, test := range tests {
-		_, err := NewParser(test.input).Parse()
+		_, err := NewParser([]token.Token{}).parseBinaryExpr(
+			test.operatorToken,
+			test.leftExpr,
+			test.rightToken,
+			0,
+		)
 
 		if err == nil {
-			t.Fatalf("expected error for \"%v\", got none", test.input)
+			t.Fatal("expected error, got none")
 		}
 
 		if err.Error() != test.expected {

@@ -95,7 +95,7 @@ func TestParseErr(t *testing.T) {
 				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
-			expected: "unexpected token: /",
+			expected: "unexpected token: '/'",
 		},
 	}
 

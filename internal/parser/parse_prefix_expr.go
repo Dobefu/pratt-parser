@@ -25,7 +25,7 @@ func (p *Parser) parsePrefixExpr(
 		return p.parseFunctionCallOrIdentifier(currentToken, recursionDepth)
 
 	default:
-		return nil, fmt.Errorf("unexpected token: %s", currentToken.Atom)
+		return nil, fmt.Errorf("unexpected token: '%s'", currentToken.Atom)
 	}
 }
 

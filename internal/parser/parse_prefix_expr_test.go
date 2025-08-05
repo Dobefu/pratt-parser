@@ -34,6 +34,19 @@ func TestParsePrefixExpr(t *testing.T) {
 				Operand:  &ast.NumberLiteral{Value: "PI"},
 			},
 		},
+		{
+			input: []token.Token{
+				{Atom: "-", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "abs", TokenType: token.TokenTypeIdentifier},
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+			},
+			expected: &ast.PrefixExpr{
+				Operator: token.Token{Atom: "-", TokenType: token.TokenTypeOperationSub},
+				Operand:  &ast.NumberLiteral{Value: "abs(1)"},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -82,7 +95,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 			input: []token.Token{
 				{Atom: ")", TokenType: token.TokenTypeRParen},
 			},
-			expected: "unexpected token: )",
+			expected: "unexpected token: ')'",
 		},
 		{
 			input: []token.Token{
