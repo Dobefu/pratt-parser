@@ -93,12 +93,12 @@ func TestMainErr(t *testing.T) {
 		main.Run()
 
 		if mainErr == nil {
-			t.Errorf("expected error, got none for input %s", test.input)
+			t.Fatalf("expected error, got none for input \"%s\"", test.input)
 		}
 
 		if mainErr.Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
 				mainErr.Error(),
 			)

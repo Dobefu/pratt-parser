@@ -5,24 +5,35 @@ import (
 	"testing"
 
 	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
 func TestParseFunctionCall(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    string
-		expected ast.ExprNode
+		input    []token.Token
+		expected *ast.FunctionCall
 	}{
 		{
-			input: "(1)",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+			},
 			expected: &ast.FunctionCall{
 				FunctionName: "abs",
 				Arguments:    []ast.ExprNode{&ast.NumberLiteral{Value: "1"}},
 			},
 		},
 		{
-			input: "(1, 1)",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: ",", TokenType: token.TokenTypeComma},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+			},
 			expected: &ast.FunctionCall{
 				FunctionName: "abs",
 				Arguments: []ast.ExprNode{
@@ -35,23 +46,15 @@ func TestParseFunctionCall(t *testing.T) {
 
 	for _, test := range tests {
 		parser := NewParser(test.input)
-		tokens, err := parser.tokenizer.Tokenize()
-
-		if err != nil {
-			t.Errorf("expected no error, got %v", err)
-		}
-
-		parser.tokens = tokens
-		parser.tokenLen = len(tokens)
 
 		expr, err := parser.parseFunctionCall("abs", 0)
 
 		if err != nil {
-			t.Errorf("expected no error, got %v", err)
+			t.Errorf("expected no error, got \"%v\"", err)
 		}
 
 		if !reflect.DeepEqual(expr, test.expected) {
-			t.Errorf("expected %v, got %v", test.expected, expr)
+			t.Errorf("expected \"%v\", got \"%v\"", test.expected, expr)
 		}
 	}
 }
@@ -60,46 +63,48 @@ func TestParseFunctionCallErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    string
+		input    []token.Token
 		expected string
 	}{
 		{
-			input:    "",
+			input:    []token.Token{},
 			expected: "cannot get next token after EOF",
 		},
 		{
-			input:    "(",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+			},
 			expected: "cannot peek next token after EOF",
 		},
 		{
-			input:    "abs",
+			input: []token.Token{
+				{Atom: "abs", TokenType: token.TokenTypeIdentifier},
+			},
 			expected: "expected '(', got: abs",
 		},
 		{
-			input:    "(1",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
 			expected: "cannot peek next token after EOF",
 		},
 		{
-			input:    "(1,",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: ",", TokenType: token.TokenTypeComma},
+			},
 			expected: "cannot get next token after EOF",
 		},
 	}
 
 	for _, test := range tests {
 		parser := NewParser(test.input)
-		tokens, err := parser.tokenizer.Tokenize()
-
-		if err != nil {
-			t.Errorf("expected a different error, got %v", err)
-		}
-
-		parser.tokens = tokens
-		parser.tokenLen = len(tokens)
-
-		_, err = parser.parseFunctionCall("abs", 0)
+		_, err := parser.parseFunctionCall("abs", 0)
 
 		if err == nil {
-			t.Errorf("expected error, got none for input %s", test.input)
+			t.Fatalf("expected error, got none for input \"%v\"", test.input)
 		}
 
 		if err.Error() != test.expected {

@@ -3,7 +3,9 @@ package parser
 import (
 	"testing"
 
+	"github.com/Dobefu/pratt-parser/internal/ast"
 	"github.com/Dobefu/pratt-parser/internal/token"
+	"github.com/Dobefu/pratt-parser/internal/tokenizer"
 )
 
 func TestParseBinaryExpr(t *testing.T) {
@@ -11,26 +13,36 @@ func TestParseBinaryExpr(t *testing.T) {
 
 	tests := []struct {
 		input    string
-		expected float64
+		expected *ast.BinaryExpr
 	}{
 		{
-			input:    "1 + 1",
-			expected: 2,
+			input: "1 + 1",
+			expected: &ast.BinaryExpr{
+				Left:  &ast.NumberLiteral{Value: "1"},
+				Right: &ast.NumberLiteral{Value: "1"},
+				Operator: token.Token{
+					Atom:      "+",
+					TokenType: token.TokenTypeOperationAdd,
+				},
+			},
 		},
 	}
 
 	for _, test := range tests {
-		parser := NewParser(test.input)
+		to := tokenizer.NewTokenizer(test.input)
+		tokens, _ := to.Tokenize()
+
+		parser := NewParser(tokens)
 		result, err := parser.Parse()
 
 		if err != nil {
-			t.Errorf("expected no error, got %v", err)
+			t.Errorf("expected no error, got \"%v\"", err)
 
 			continue
 		}
 
-		if result != test.expected {
-			t.Errorf("expected %f, got %f", test.expected, result)
+		if result.Expr() != test.expected.Expr() {
+			t.Errorf("expected \"%s\", got \"%s\"", test.expected.Expr(), result.Expr())
 		}
 	}
 }
@@ -39,28 +51,26 @@ func TestParseBinaryExprErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    string
+		input    []token.Token
 		expected string
 	}{
 		{
-			input:    "",
+			input:    []token.Token{},
 			expected: "no tokens to parse",
 		},
 		{
-			input:    "1 +",
+			input: []token.Token{
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+			},
 			expected: "cannot get next token after EOF",
 		},
 		{
-			input:    "1 + 2 *",
-			expected: "cannot peek next character after EOF",
-		},
-		{
-			input:    "1 + 2 * 3 /",
+			input: []token.Token{
+				{Atom: "3", TokenType: token.TokenTypeNumber},
+				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
+			},
 			expected: "cannot get next token after EOF",
-		},
-		{
-			input:    "1 💔 1",
-			expected: "unexpected character: 💔 at position 3",
 		},
 	}
 
@@ -68,12 +78,12 @@ func TestParseBinaryExprErr(t *testing.T) {
 		_, err := NewParser(test.input).Parse()
 
 		if err == nil {
-			t.Errorf("expected error for %s, got none", test.input)
+			t.Fatalf("expected error for \"%v\", got none", test.input)
 		}
 
 		if err.Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
 				err.Error(),
 			)
@@ -83,7 +93,7 @@ func TestParseBinaryExprErr(t *testing.T) {
 
 func BenchmarkParseBinaryExpr(b *testing.B) {
 	for b.Loop() {
-		p := NewParser("")
+		p := NewParser([]token.Token{})
 
 		_, _ = p.parseBinaryExpr(
 			&token.Token{

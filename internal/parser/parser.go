@@ -2,29 +2,23 @@
 package parser
 
 import (
-	"github.com/Dobefu/pratt-parser/internal/evaluator"
 	"github.com/Dobefu/pratt-parser/internal/token"
-	"github.com/Dobefu/pratt-parser/internal/tokenizer"
 )
 
 // Parser defines the parser itself.
 type Parser struct {
-	tokenizer *tokenizer.Tokenizer
-	evaluator *evaluator.Evaluator
-	tokens    []token.Token
-	tokenIdx  int
-	tokenLen  int
-	isEOF     bool
+	tokens   []token.Token
+	tokenIdx int
+	tokenLen int
+	isEOF    bool
 }
 
 // NewParser creates a new instance of the Parser struct.
-func NewParser(exp string) *Parser {
+func NewParser(tokens []token.Token) *Parser {
 	return &Parser{
-		tokenizer: tokenizer.NewTokenizer(exp),
-		evaluator: evaluator.NewEvaluator(),
-		tokens:    []token.Token{},
-		tokenIdx:  0,
-		tokenLen:  0,
-		isEOF:     len(exp) <= 0,
+		tokens:   tokens,
+		tokenIdx: 0,
+		tokenLen: len(tokens),
+		isEOF:    len(tokens) <= 0,
 	}
 }

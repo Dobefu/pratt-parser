@@ -7,7 +7,9 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/Dobefu/pratt-parser/internal/evaluator"
 	"github.com/Dobefu/pratt-parser/internal/parser"
+	"github.com/Dobefu/pratt-parser/internal/tokenizer"
 )
 
 // Main is the main entrypoint of the application.
@@ -26,11 +28,31 @@ func (m *Main) Run() {
 		return
 	}
 
-	p := parser.NewParser(m.args[1])
-	result, err := p.Parse()
+	t := tokenizer.NewTokenizer(m.args[1])
+	tokens, err := t.Tokenize()
 
 	if err != nil {
 		m.onError(err)
+
+		return
+	}
+
+	p := parser.NewParser(tokens)
+	ast, err := p.Parse()
+
+	if err != nil {
+		m.onError(err)
+
+		return
+	}
+
+	e := evaluator.NewEvaluator()
+	result, err := e.Evaluate(ast)
+
+	if err != nil {
+		m.onError(err)
+
+		return
 	}
 
 	m.result = result

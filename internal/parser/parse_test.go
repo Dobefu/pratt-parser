@@ -2,50 +2,50 @@ package parser
 
 import (
 	"testing"
+
+	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
 func TestParse(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    string
-		expected float64
+		input    []token.Token
+		expected string
 	}{
 		{
-			input:    "1",
-			expected: 1,
+			input: []token.Token{
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
+			expected: "1",
 		},
 		{
-			input:    "1 + 1",
-			expected: 2,
-		},
-		{
-			input:    "(1 + 1)",
-			expected: 2,
-		},
-		{
-			input:    "1 ** 1",
-			expected: 1,
-		},
-		{
-			input:    "1 % 1",
-			expected: 0,
-		},
-		{
-			input:    "1 + 2 * 3",
-			expected: 7,
-		},
-		{
-			input:    "1 + 2 * 3 / 4",
-			expected: 2.5,
-		},
-		{
-			input:    "1 + 2 * 3 / 4 - 5",
-			expected: -2.5,
-		},
-		{
-			input:    "(1 + 10 / 5 + 2 * 5 - ( -123 - (-(5))))",
-			expected: 131,
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "10", TokenType: token.TokenTypeNumber},
+				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
+				{Atom: "5", TokenType: token.TokenTypeNumber},
+				{Atom: "**", TokenType: token.TokenTypeOperationPow},
+				{Atom: "2", TokenType: token.TokenTypeNumber},
+				{Atom: "*", TokenType: token.TokenTypeOperationMul},
+				{Atom: "5", TokenType: token.TokenTypeNumber},
+				{Atom: "-", TokenType: token.TokenTypeOperationSub},
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "-", TokenType: token.TokenTypeOperationSub},
+				{Atom: "123", TokenType: token.TokenTypeNumber},
+				{Atom: "%", TokenType: token.TokenTypeOperationMod},
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "-", TokenType: token.TokenTypeOperationSub},
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "5", TokenType: token.TokenTypeNumber},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+			},
+			expected: "((1 + (10 / ((5 ** 2) * 5))) - (- (123 % (- 5))))",
 		},
 	}
 
@@ -59,8 +59,8 @@ func TestParse(t *testing.T) {
 			continue
 		}
 
-		if result != test.expected {
-			t.Errorf("expected %f, got %f", test.expected, result)
+		if result.Expr() != test.expected {
+			t.Errorf("expected %v, got %v", test.expected, result)
 		}
 	}
 }
@@ -69,23 +69,25 @@ func TestParseErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    string
+		input    []token.Token
 		expected string
 	}{
 		{
-			input:    "",
+			input:    []token.Token{},
 			expected: "no tokens to parse",
 		},
 		{
-			input:    "1 +",
+			input: []token.Token{
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+			},
 			expected: "cannot get next token after EOF",
 		},
 		{
-			input:    "1 + 2 *",
-			expected: "cannot peek next character after EOF",
-		},
-		{
-			input:    "/ 1",
+			input: []token.Token{
+				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
 			expected: "unexpected token: /",
 		},
 	}
@@ -94,7 +96,7 @@ func TestParseErr(t *testing.T) {
 		_, err := NewParser(test.input).Parse()
 
 		if err == nil {
-			t.Errorf("expected error for %s, got none", test.input)
+			t.Fatalf("expected error for \"%v\", got none", test.input)
 		}
 
 		if err.Error() != test.expected {
@@ -109,7 +111,21 @@ func TestParseErr(t *testing.T) {
 
 func BenchmarkParse(b *testing.B) {
 	for b.Loop() {
-		p := NewParser("1 + 2 * 3 / 4")
+		p := NewParser(
+			[]token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "2", TokenType: token.TokenTypeNumber},
+				{Atom: "*", TokenType: token.TokenTypeOperationMul},
+				{Atom: "3", TokenType: token.TokenTypeNumber},
+				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
+				{Atom: "4", TokenType: token.TokenTypeNumber},
+				{Atom: "**", TokenType: token.TokenTypeOperationPow},
+				{Atom: "4", TokenType: token.TokenTypeNumber},
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+			},
+		)
 		_, _ = p.Parse()
 	}
 }

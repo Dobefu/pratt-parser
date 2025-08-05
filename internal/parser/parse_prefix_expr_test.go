@@ -1,32 +1,38 @@
 package parser
 
 import (
-	"math"
 	"testing"
+
+	"github.com/Dobefu/pratt-parser/internal/ast"
+	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
 func TestParsePrefixExpr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    string
-		expected float64
+		input    []token.Token
+		expected *ast.PrefixExpr
 	}{
 		{
-			input:    "1",
-			expected: 1,
+			input: []token.Token{
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
+			expected: &ast.PrefixExpr{
+				Operator: token.Token{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				Operand:  &ast.NumberLiteral{Value: "1"},
+			},
 		},
 		{
-			input:    "PI",
-			expected: math.Pi,
-		},
-		{
-			input:    "PI + 1",
-			expected: math.Pi + 1,
-		},
-		{
-			input:    "abs(-1)",
-			expected: 1,
+			input: []token.Token{
+				{Atom: "-", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "PI", TokenType: token.TokenTypeIdentifier},
+			},
+			expected: &ast.PrefixExpr{
+				Operator: token.Token{Atom: "-", TokenType: token.TokenTypeOperationSub},
+				Operand:  &ast.NumberLiteral{Value: "PI"},
+			},
 		},
 	}
 
@@ -35,13 +41,13 @@ func TestParsePrefixExpr(t *testing.T) {
 		result, err := parser.Parse()
 
 		if err != nil {
-			t.Errorf("expected no error, got %v", err)
+			t.Errorf("expected no error, got \"%s\"", err.Error())
 
 			continue
 		}
 
-		if result != test.expected {
-			t.Errorf("expected %f, got %f", test.expected, result)
+		if result.Expr() != test.expected.Expr() {
+			t.Errorf("expected \"%s\", got \"%s\"", test.expected.Expr(), result.Expr())
 		}
 	}
 }
@@ -50,35 +56,61 @@ func TestParsePrefixExprErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    string
+		input    []token.Token
 		expected string
 	}{
 		{
-			input:    "+",
+			input: []token.Token{
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+			},
 			expected: "cannot get next token after EOF",
 		},
 		{
-			input:    "++",
+			input: []token.Token{
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+			},
 			expected: "cannot get next token after EOF",
 		},
 		{
-			input:    "(",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+			},
 			expected: "cannot get next token after EOF",
 		},
 		{
-			input:    ")",
+			input: []token.Token{
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+			},
 			expected: "unexpected token: )",
 		},
 		{
-			input:    "(1 + 1",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
 			expected: "expected ')', but got EOF",
 		},
 		{
-			input:    "(1 + 1 +",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+			},
 			expected: "cannot get next token after EOF",
 		},
 		{
-			input:    "(1 + 1 (",
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+			},
 			expected: "expected ')', got: (",
 		},
 	}
@@ -87,7 +119,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 		_, err := NewParser(test.input).Parse()
 
 		if err == nil {
-			t.Errorf("expected error for %s, got none", test.input)
+			t.Fatalf("expected error for \"%v\", got none", test.input)
 		}
 
 		if err.Error() != test.expected {
