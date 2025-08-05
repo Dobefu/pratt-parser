@@ -92,6 +92,17 @@ func TestTokenize(t *testing.T) {
 				{Atom: ")", TokenType: token.TokenTypeRParen},
 			},
 		},
+		{
+			input: "min(1, 2)",
+			expected: []token.Token{
+				{Atom: "min", TokenType: token.TokenTypeIdentifier},
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				tokenizeTestGetNumberToken("1"),
+				{Atom: ",", TokenType: token.TokenTypeComma},
+				tokenizeTestGetNumberToken("2"),
+				{Atom: ")", TokenType: token.TokenTypeRParen},
+			},
+		},
 	}
 
 	for _, test := range tests {

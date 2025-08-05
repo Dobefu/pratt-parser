@@ -68,6 +68,8 @@ func TestParsePrefixExpr(t *testing.T) {
 func TestParsePrefixExprErr(t *testing.T) {
 	t.Parallel()
 
+	errNextTokenAfterEOF := "cannot get next token after EOF"
+
 	tests := []struct {
 		input    []token.Token
 		expected string
@@ -75,21 +77,15 @@ func TestParsePrefixExprErr(t *testing.T) {
 		{
 			input: []token.Token{
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
-			},
-			expected: "cannot get next token after EOF",
-		},
-		{
-			input: []token.Token{
-				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 			},
-			expected: "cannot get next token after EOF",
+			expected: errNextTokenAfterEOF,
 		},
 		{
 			input: []token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 			},
-			expected: "cannot get next token after EOF",
+			expected: errNextTokenAfterEOF,
 		},
 		{
 			input: []token.Token{
@@ -114,7 +110,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 			},
-			expected: "cannot get next token after EOF",
+			expected: errNextTokenAfterEOF,
 		},
 		{
 			input: []token.Token{
