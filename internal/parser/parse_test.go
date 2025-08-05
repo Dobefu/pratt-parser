@@ -78,6 +78,13 @@ func TestParseErr(t *testing.T) {
 		},
 		{
 			input: []token.Token{
+				{Atom: "_", TokenType: token.TokenTypeNumber},
+			},
+			expected: "cannot get next token after EOF",
+		},
+		{
+			input: []token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 			},
@@ -93,7 +100,14 @@ func TestParseErr(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		_, err := NewParser(test.input).Parse()
+		p := NewParser(test.input)
+
+		// Test the EOF error.
+		if len(test.input) == 1 && test.input[0].Atom == "_" {
+			p.isEOF = true
+		}
+
+		_, err := p.Parse()
 
 		if err == nil {
 			t.Fatalf("expected error for \"%v\", got none", test.input)
