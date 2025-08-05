@@ -146,6 +146,17 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 			},
 			expected: "modulo by zero",
 		},
+		{
+			input: &ast.BinaryExpr{
+				Left:  &ast.NumberLiteral{Value: "0"},
+				Right: &ast.NumberLiteral{Value: "0"},
+				Operator: token.Token{
+					Atom:      ",",
+					TokenType: token.TokenTypeComma,
+				},
+			},
+			expected: "unknown operator: ,",
+		},
 	}
 
 	for _, test := range tests {
