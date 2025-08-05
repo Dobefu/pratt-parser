@@ -81,6 +81,22 @@ func TestEvaluateFunctionCall(t *testing.T) {
 			),
 			expected: 4,
 		},
+		{
+			input: evaluateFunctionCallCreateFunctionCall(
+				"min",
+				&ast.NumberLiteral{Value: "1"},
+				&ast.NumberLiteral{Value: "2"},
+			),
+			expected: 1,
+		},
+		{
+			input: evaluateFunctionCallCreateFunctionCall(
+				"max",
+				&ast.NumberLiteral{Value: "1"},
+				&ast.NumberLiteral{Value: "2"},
+			),
+			expected: 2,
+		},
 	}
 
 	for _, test := range tests {

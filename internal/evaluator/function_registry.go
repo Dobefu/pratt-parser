@@ -53,4 +53,16 @@ var functionRegistry = map[string]functionInfo{
 			return math.Ceil(args[0]), nil
 		},
 	},
+	"min": {
+		argCount: 2,
+		handler: func(args []float64) (float64, error) {
+			return math.Min(args[0], args[1]), nil
+		},
+	},
+	"max": {
+		argCount: 2,
+		handler: func(args []float64) (float64, error) {
+			return math.Max(args[0], args[1]), nil
+		},
+	},
 }

@@ -28,3 +28,5 @@
 - `round(x)` - Round `x` to the nearest integer value
 - `floor(x)` - Round `x` down to the nearest integer value
 - `ceil(x)` - Round `x` up to the nearest integer value
+- `min(x, y)` - Get the smallest of the values provided
+- `max(x, y)` - Get the largest of the values provided
