@@ -68,7 +68,7 @@ func TestParsePrefixExpr(t *testing.T) {
 func TestParsePrefixExprErr(t *testing.T) {
 	t.Parallel()
 
-	errNextTokenAfterEOF := "cannot get next token after EOF"
+	errNextTokenAfterEOF := "unexpected end of expression"
 
 	tests := []struct {
 		input    []token.Token

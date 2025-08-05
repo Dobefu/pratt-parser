@@ -62,19 +62,21 @@ func TestParseFunctionCall(t *testing.T) {
 func TestParseFunctionCallErr(t *testing.T) {
 	t.Parallel()
 
+	errUnexpectedEOF := "expected ')', but the expression ended"
+
 	tests := []struct {
 		input    []token.Token
 		expected string
 	}{
 		{
 			input:    []token.Token{},
-			expected: "cannot get next token after EOF",
+			expected: "unexpected end of expression",
 		},
 		{
 			input: []token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 			},
-			expected: "cannot peek next token after EOF",
+			expected: errUnexpectedEOF,
 		},
 		{
 			input: []token.Token{
@@ -87,7 +89,7 @@ func TestParseFunctionCallErr(t *testing.T) {
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
-			expected: "cannot peek next token after EOF",
+			expected: errUnexpectedEOF,
 		},
 		{
 			input: []token.Token{
@@ -95,7 +97,7 @@ func TestParseFunctionCallErr(t *testing.T) {
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: ",", TokenType: token.TokenTypeComma},
 			},
-			expected: "cannot get next token after EOF",
+			expected: "unexpected end of expression",
 		},
 	}
 

@@ -21,7 +21,7 @@ func (p *Parser) parseFunctionCall(functionName string, recursionDepth int) (ast
 	nextToken, err := p.PeekNextToken()
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("expected ')', but the expression ended")
 	}
 
 	var args []ast.ExprNode
@@ -74,7 +74,7 @@ func (p *Parser) parseFunctionCallArguments(
 		nextToken, err := p.PeekNextToken()
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("expected ')', but the expression ended")
 		}
 
 		if nextToken.TokenType == token.TokenTypeRParen {

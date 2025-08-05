@@ -69,7 +69,7 @@ func TestMainErr(t *testing.T) {
 		},
 		{
 			input:    "1 +",
-			expected: "cannot get next token after EOF",
+			expected: "unexpected end of expression",
 		},
 	}
 

@@ -151,7 +151,7 @@ func TestTokenizeErr(t *testing.T) {
 		},
 		{
 			input:    "*",
-			expected: "cannot peek next character after EOF",
+			expected: "unexpected end of expression",
 		},
 	}
 

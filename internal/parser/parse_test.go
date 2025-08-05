@@ -74,13 +74,13 @@ func TestParseErr(t *testing.T) {
 	}{
 		{
 			input:    []token.Token{},
-			expected: "no tokens to parse",
+			expected: "empty expression",
 		},
 		{
 			input: []token.Token{
 				{Atom: "_", TokenType: token.TokenTypeNumber},
 			},
-			expected: "cannot get next token after EOF",
+			expected: "unexpected end of expression",
 		},
 		{
 			input: []token.Token{
@@ -88,7 +88,7 @@ func TestParseErr(t *testing.T) {
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 			},
-			expected: "cannot get next token after EOF",
+			expected: "unexpected end of expression",
 		},
 		{
 			input: []token.Token{

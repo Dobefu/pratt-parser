@@ -42,7 +42,7 @@ func TestGetNextErr(t *testing.T) {
 	}{
 		{
 			input:    "\xFF",
-			expected: "invalid UTF-8 sequence",
+			expected: "invalid character in expression",
 		},
 	}
 
