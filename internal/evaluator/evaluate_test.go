@@ -58,3 +58,26 @@ func TestEvaluate(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkEvaluate(b *testing.B) {
+	for b.Loop() {
+		_, _ = NewEvaluator().Evaluate(
+			&ast.BinaryExpr{
+				Left: &ast.NumberLiteral{Value: "1"},
+				Right: &ast.BinaryExpr{
+					Left: &ast.PrefixExpr{
+						Operator: *token.NewToken("-", token.TokenTypeOperationSub),
+						Operand:  &ast.NumberLiteral{Value: "2"},
+					},
+					Right: &ast.BinaryExpr{
+						Left:     &ast.NumberLiteral{Value: "3"},
+						Right:    &ast.NumberLiteral{Value: "4"},
+						Operator: *token.NewToken("/", token.TokenTypeOperationDiv),
+					},
+					Operator: *token.NewToken("*", token.TokenTypeOperationMul),
+				},
+				Operator: *token.NewToken("+", token.TokenTypeOperationAdd),
+			},
+		)
+	}
+}
