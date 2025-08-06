@@ -142,3 +142,12 @@ func TestParsePrefixExprErr(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkParsePrefixExpr(b *testing.B) {
+	for b.Loop() {
+		_, _ = NewParser([]*token.Token{
+			{Atom: "-", TokenType: token.TokenTypeOperationSub},
+			{Atom: "1", TokenType: token.TokenTypeNumber},
+		}).Parse()
+	}
+}
