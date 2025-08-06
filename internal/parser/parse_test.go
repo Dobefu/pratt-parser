@@ -129,17 +129,14 @@ func BenchmarkParse(b *testing.B) {
 	for b.Loop() {
 		p := NewParser(
 			[]*token.Token{
-				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
+				{Atom: "-", TokenType: token.TokenTypeOperationSub},
 				{Atom: "2", TokenType: token.TokenTypeNumber},
 				{Atom: "*", TokenType: token.TokenTypeOperationMul},
 				{Atom: "3", TokenType: token.TokenTypeNumber},
 				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
 				{Atom: "4", TokenType: token.TokenTypeNumber},
-				{Atom: "**", TokenType: token.TokenTypeOperationPow},
-				{Atom: "4", TokenType: token.TokenTypeNumber},
-				{Atom: ")", TokenType: token.TokenTypeRParen},
 			},
 		)
 		_, _ = p.Parse()

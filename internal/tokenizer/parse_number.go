@@ -21,9 +21,11 @@ func (t *Tokenizer) parseNumber(current rune) (*token.Token, error) {
 	var errMsg errorutil.ErrorMsg
 
 	var number strings.Builder
-	var literalNumber strings.Builder
 	number.WriteRune(current)
-	literalNumber.WriteRune(current)
+
+	currentByteSize := len(string(current))
+	literalStartIdx := t.byteIdx - currentByteSize
+	literalEndIdx := t.byteIdx
 
 	lastChar := current
 	isNumberValid := true
@@ -41,8 +43,6 @@ GETNEXT:
 		if err != nil {
 			return nil, err
 		}
-
-		literalNumber.WriteRune(next)
 
 		switch next {
 		case '_':
@@ -95,6 +95,7 @@ GETNEXT:
 			return nil, err
 		}
 
+		literalEndIdx = t.byteIdx
 		lastChar = next
 	}
 
@@ -103,10 +104,21 @@ GETNEXT:
 	}
 
 	if errMsg != "" {
-		return nil, errorutil.NewError(errMsg, literalNumber.String())
+		return nil, t.createNumberErr(errMsg, literalStartIdx, literalEndIdx)
 	}
 
 	return t.tokenPool.GetToken(number.String(), token.TokenTypeNumber), nil
+}
+
+func (t *Tokenizer) createNumberErr(errMsg errorutil.ErrorMsg, literalStartIdx, literalEndIdx int) error {
+	if !t.isEOF {
+		next, _ := t.Peek()
+		literalEndIdx += len(string(next))
+	}
+
+	literalString := t.exp[literalStartIdx:literalEndIdx]
+
+	return errorutil.NewError(errMsg, literalString)
 }
 
 func (t *Tokenizer) handleUnderscore(
