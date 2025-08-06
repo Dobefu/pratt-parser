@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"testing"
 
@@ -42,7 +43,8 @@ func TestMain(t *testing.T) {
 
 	for _, test := range tests {
 		main := &Main{
-			args: []string{os.Args[0], test.input},
+			args:    []string{os.Args[0], test.input},
+			outFile: io.Discard,
 			onError: func(err error) {
 				t.Errorf("expected no error, got %v", err)
 			},
@@ -84,7 +86,8 @@ func TestMainErr(t *testing.T) {
 		}
 
 		main := &Main{
-			args: args,
+			args:    args,
+			outFile: io.Discard,
 			onError: func(err error) {
 				mainErr = err
 			},
@@ -105,5 +108,20 @@ func TestMainErr(t *testing.T) {
 				mainErr.Error(),
 			)
 		}
+	}
+}
+
+func BenchmarkMain(b *testing.B) {
+	for b.Loop() {
+		main := &Main{
+			args:    []string{os.Args[0], "1 + -2 * 3 / 4"},
+			outFile: io.Discard,
+			onError: func(err error) {
+				b.Errorf("expected no error, got %v", err)
+			},
+			result: 0,
+		}
+
+		main.Run()
 	}
 }

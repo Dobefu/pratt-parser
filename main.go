@@ -4,8 +4,10 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
+	"strconv"
 
 	"github.com/Dobefu/pratt-parser/internal/evaluator"
 	"github.com/Dobefu/pratt-parser/internal/parser"
@@ -16,6 +18,7 @@ import (
 type Main struct {
 	args    []string
 	onError func(error)
+	outFile io.Writer
 
 	result float64
 }
@@ -57,12 +60,17 @@ func (m *Main) Run() {
 
 	m.result = result
 
-	fmt.Println(m.result) //nolint
+	_, err = fmt.Fprintln(m.outFile, strconv.FormatFloat(m.result, 'f', -1, 64))
+
+	if err != nil {
+		m.onError(err)
+	}
 }
 
 func main() {
 	(&Main{
-		args: os.Args,
+		args:    os.Args,
+		outFile: os.Stdout,
 		onError: func(err error) {
 			slog.Error(err.Error())
 			os.Exit(1)
