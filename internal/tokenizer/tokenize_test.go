@@ -172,7 +172,7 @@ func TestTokenizeErr(t *testing.T) {
 }
 
 func BenchmarkTokenize(b *testing.B) {
-	t := NewTokenizer("1 + -2 * 3")
+	t := NewTokenizer("1 + -2 * 3 / 4")
 
 	for b.Loop() {
 		_, _ = t.Tokenize()

@@ -1,6 +1,7 @@
 package tokenizer
 
 import (
+	"strings"
 	"unicode"
 
 	"github.com/Dobefu/pratt-parser/internal/errorutil"
@@ -35,13 +36,13 @@ func (t *Tokenizer) Tokenize() ([]*token.Token, error) {
 			tokens = append(tokens, newToken)
 
 		case '+':
-			tokens = append(tokens, token.NewToken(
+			tokens = append(tokens, t.tokenPool.GetToken(
 				"+",
 				token.TokenTypeOperationAdd,
 			))
 
 		case '-':
-			tokens = append(tokens, token.NewToken(
+			tokens = append(tokens, t.tokenPool.GetToken(
 				"-",
 				token.TokenTypeOperationSub,
 			))
@@ -56,31 +57,31 @@ func (t *Tokenizer) Tokenize() ([]*token.Token, error) {
 			tokens = append(tokens, token)
 
 		case '%':
-			tokens = append(tokens, token.NewToken(
+			tokens = append(tokens, t.tokenPool.GetToken(
 				"%",
 				token.TokenTypeOperationMod,
 			))
 
 		case '/':
-			tokens = append(tokens, token.NewToken(
+			tokens = append(tokens, t.tokenPool.GetToken(
 				"/",
 				token.TokenTypeOperationDiv,
 			))
 
 		case '(':
-			tokens = append(tokens, token.NewToken(
+			tokens = append(tokens, t.tokenPool.GetToken(
 				"(",
 				token.TokenTypeLParen,
 			))
 
 		case ')':
-			tokens = append(tokens, token.NewToken(
+			tokens = append(tokens, t.tokenPool.GetToken(
 				")",
 				token.TokenTypeRParen,
 			))
 
 		case ',':
-			tokens = append(tokens, token.NewToken(
+			tokens = append(tokens, t.tokenPool.GetToken(
 				",",
 				token.TokenTypeComma,
 			))
@@ -113,14 +114,15 @@ func (t *Tokenizer) handleAsterisk() (*token.Token, error) {
 			return nil, err
 		}
 
-		return token.NewToken("**", token.TokenTypeOperationPow), nil
+		return t.tokenPool.GetToken("**", token.TokenTypeOperationPow), nil
 	}
 
-	return token.NewToken("*", token.TokenTypeOperationMul), nil
+	return t.tokenPool.GetToken("*", token.TokenTypeOperationMul), nil
 }
 
 func (t *Tokenizer) parseIdentifier(firstChar rune) (*token.Token, error) {
-	identifier := string(firstChar)
+	var identifier strings.Builder
+	identifier.WriteRune(firstChar)
 
 	for !t.isEOF {
 		next, err := t.Peek()
@@ -138,7 +140,7 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (*token.Token, error) {
 				return nil, err
 			}
 
-			identifier += string(next)
+			identifier.WriteRune(next)
 
 			continue
 		}
@@ -146,7 +148,7 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (*token.Token, error) {
 		break
 	}
 
-	return token.NewToken(identifier, token.TokenTypeIdentifier), nil
+	return t.tokenPool.GetToken(identifier.String(), token.TokenTypeIdentifier), nil
 }
 
 func (t *Tokenizer) parseUnknownChar(next rune) (*token.Token, error) {

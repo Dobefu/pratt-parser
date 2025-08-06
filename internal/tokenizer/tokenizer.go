@@ -3,24 +3,28 @@ package tokenizer
 
 import (
 	"unicode/utf8"
+
+	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
 // Tokenizer defines the tokenizer itself.
 type Tokenizer struct {
-	exp     string
-	expLen  int
-	expIdx  int
-	byteIdx int
-	isEOF   bool
+	exp       string
+	expLen    int
+	expIdx    int
+	byteIdx   int
+	isEOF     bool
+	tokenPool *token.Pool
 }
 
 // NewTokenizer creates a new instance of the Tokenizer struct.
 func NewTokenizer(exp string) *Tokenizer {
 	return &Tokenizer{
-		exp:     exp,
-		expLen:  utf8.RuneCountInString(exp),
-		expIdx:  0,
-		byteIdx: 0,
-		isEOF:   len(exp) <= 0,
+		exp:       exp,
+		expLen:    utf8.RuneCountInString(exp),
+		expIdx:    0,
+		byteIdx:   0,
+		isEOF:     len(exp) <= 0,
+		tokenPool: token.NewPool(),
 	}
 }

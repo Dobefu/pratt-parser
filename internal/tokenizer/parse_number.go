@@ -106,7 +106,7 @@ GETNEXT:
 		return nil, errorutil.NewError(errMsg, literalNumber.String())
 	}
 
-	return token.NewToken(number.String(), token.TokenTypeNumber), nil
+	return t.tokenPool.GetToken(number.String(), token.TokenTypeNumber), nil
 }
 
 func (t *Tokenizer) handleUnderscore(
