@@ -60,6 +60,11 @@ func (m *Main) Run() {
 
 	m.result = result
 
+	// If the output file is io.Discard, we don't need to format the result.
+	if m.outFile == io.Discard {
+		return
+	}
+
 	_, err = fmt.Fprintln(m.outFile, strconv.FormatFloat(m.result, 'f', -1, 64))
 
 	if err != nil {
