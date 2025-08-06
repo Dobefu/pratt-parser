@@ -118,3 +118,15 @@ func TestParseFunctionCallErr(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkParseFunctionCall(b *testing.B) {
+	for b.Loop() {
+		_, _ = NewParser([]*token.Token{
+			{Atom: "(", TokenType: token.TokenTypeLParen},
+			{Atom: "1", TokenType: token.TokenTypeNumber},
+			{Atom: ",", TokenType: token.TokenTypeComma},
+			{Atom: "2", TokenType: token.TokenTypeNumber},
+			{Atom: ")", TokenType: token.TokenTypeRParen},
+		}).parseFunctionCall("min", 0)
+	}
+}
