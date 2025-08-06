@@ -3,9 +3,9 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"os"
-	"strconv"
 
 	"github.com/Dobefu/pratt-parser/internal/evaluator"
 	"github.com/Dobefu/pratt-parser/internal/parser"
@@ -57,7 +57,7 @@ func (m *Main) Run() {
 
 	m.result = result
 
-	slog.Info(strconv.FormatFloat(m.result, 'g', -1, 64))
+	fmt.Println(m.result) //nolint
 }
 
 func main() {
