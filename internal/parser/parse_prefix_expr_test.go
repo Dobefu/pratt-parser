@@ -13,11 +13,11 @@ func TestParsePrefixExpr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    []token.Token
+		input    []*token.Token
 		expected *ast.PrefixExpr
 	}{
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
@@ -27,7 +27,7 @@ func TestParsePrefixExpr(t *testing.T) {
 			},
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "-", TokenType: token.TokenTypeOperationAdd},
 				{Atom: "PI", TokenType: token.TokenTypeIdentifier},
 			},
@@ -37,7 +37,7 @@ func TestParsePrefixExpr(t *testing.T) {
 			},
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "-", TokenType: token.TokenTypeOperationAdd},
 				{Atom: "abs", TokenType: token.TokenTypeIdentifier},
 				{Atom: "(", TokenType: token.TokenTypeLParen},
@@ -73,30 +73,30 @@ func TestParsePrefixExprErr(t *testing.T) {
 	errNextTokenAfterEOF := errorutil.ErrorMsgUnexpectedEOF
 
 	tests := []struct {
-		input    []token.Token
+		input    []*token.Token
 		expected string
 	}{
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 			},
 			expected: errNextTokenAfterEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 			},
 			expected: errNextTokenAfterEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: ")", TokenType: token.TokenTypeRParen},
 			},
 			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, ")"),
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
@@ -105,7 +105,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
@@ -115,7 +115,7 @@ func TestParsePrefixExprErr(t *testing.T) {
 			expected: errNextTokenAfterEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},

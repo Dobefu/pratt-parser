@@ -18,5 +18,5 @@ func (p *Parser) GetNextToken() (*token.Token, error) {
 		p.isEOF = true
 	}
 
-	return &next, nil
+	return next, nil
 }

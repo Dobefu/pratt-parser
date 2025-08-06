@@ -14,11 +14,11 @@ func TestParseFunctionCall(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    []token.Token
+		input    []*token.Token
 		expected *ast.FunctionCall
 	}{
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: ")", TokenType: token.TokenTypeRParen},
@@ -29,7 +29,7 @@ func TestParseFunctionCall(t *testing.T) {
 			},
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: ",", TokenType: token.TokenTypeComma},
@@ -65,34 +65,34 @@ func TestParseFunctionCallErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    []token.Token
+		input    []*token.Token
 		expected string
 	}{
 		{
-			input:    []token.Token{},
+			input:    []*token.Token{},
 			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 			},
 			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "abs", TokenType: token.TokenTypeIdentifier},
 			},
 			expected: fmt.Sprintf(errorutil.ErrorMsgExpectedOpenParen, "abs"),
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
 			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: ",", TokenType: token.TokenTypeComma},

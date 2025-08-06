@@ -12,17 +12,17 @@ func TestParse(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    []token.Token
+		input    []*token.Token
 		expected string
 	}{
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
 			expected: "1",
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
@@ -71,21 +71,21 @@ func TestParseErr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    []token.Token
+		input    []*token.Token
 		expected string
 	}{
 		{
-			input:    []token.Token{},
+			input:    []*token.Token{},
 			expected: errorutil.ErrorMsgEmptyExpression,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "_", TokenType: token.TokenTypeNumber},
 			},
 			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
@@ -93,7 +93,7 @@ func TestParseErr(t *testing.T) {
 			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
 		{
-			input: []token.Token{
+			input: []*token.Token{
 				{Atom: "/", TokenType: token.TokenTypeOperationDiv},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
@@ -128,7 +128,7 @@ func TestParseErr(t *testing.T) {
 func BenchmarkParse(b *testing.B) {
 	for b.Loop() {
 		p := NewParser(
-			[]token.Token{
+			[]*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},

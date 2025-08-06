@@ -6,3 +6,11 @@ type Token struct {
 	Atom      string
 	TokenType Type
 }
+
+// NewToken creates a new Token.
+func NewToken(atom string, tokenType Type) *Token {
+	return &Token{
+		Atom:      atom,
+		TokenType: tokenType,
+	}
+}

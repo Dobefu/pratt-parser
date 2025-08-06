@@ -116,5 +116,7 @@ func (p *Parser) handlePowToken(
 		return nil, err
 	}
 
+	// For the power operator, we need to decrease the precedence by 1.
+	// This is because power should be right-associative.
 	return p.parseExpr(nil, expr, minPrecedence-1, recursionDepth+1)
 }

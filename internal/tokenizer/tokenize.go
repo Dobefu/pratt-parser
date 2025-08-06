@@ -8,9 +8,9 @@ import (
 )
 
 // Tokenize analyzes the expression string and turns it into tokens.
-func (t *Tokenizer) Tokenize() ([]token.Token, error) {
+func (t *Tokenizer) Tokenize() ([]*token.Token, error) {
 	approxNumTokens := (t.expLen / 3)
-	tokens := make([]token.Token, 0, approxNumTokens)
+	tokens := make([]*token.Token, 0, approxNumTokens)
 
 	for !t.isEOF {
 		next, err := t.GetNext()
@@ -35,16 +35,16 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 			tokens = append(tokens, newToken)
 
 		case '+':
-			tokens = append(tokens, token.Token{
-				Atom:      "+",
-				TokenType: token.TokenTypeOperationAdd,
-			})
+			tokens = append(tokens, token.NewToken(
+				"+",
+				token.TokenTypeOperationAdd,
+			))
 
 		case '-':
-			tokens = append(tokens, token.Token{
-				Atom:      "-",
-				TokenType: token.TokenTypeOperationSub,
-			})
+			tokens = append(tokens, token.NewToken(
+				"-",
+				token.TokenTypeOperationSub,
+			))
 
 		case '*':
 			token, err := t.handleAsterisk()
@@ -56,34 +56,34 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 			tokens = append(tokens, token)
 
 		case '%':
-			tokens = append(tokens, token.Token{
-				Atom:      "%",
-				TokenType: token.TokenTypeOperationMod,
-			})
+			tokens = append(tokens, token.NewToken(
+				"%",
+				token.TokenTypeOperationMod,
+			))
 
 		case '/':
-			tokens = append(tokens, token.Token{
-				Atom:      "/",
-				TokenType: token.TokenTypeOperationDiv,
-			})
+			tokens = append(tokens, token.NewToken(
+				"/",
+				token.TokenTypeOperationDiv,
+			))
 
 		case '(':
-			tokens = append(tokens, token.Token{
-				Atom:      "(",
-				TokenType: token.TokenTypeLParen,
-			})
+			tokens = append(tokens, token.NewToken(
+				"(",
+				token.TokenTypeLParen,
+			))
 
 		case ')':
-			tokens = append(tokens, token.Token{
-				Atom:      ")",
-				TokenType: token.TokenTypeRParen,
-			})
+			tokens = append(tokens, token.NewToken(
+				")",
+				token.TokenTypeRParen,
+			))
 
 		case ',':
-			tokens = append(tokens, token.Token{
-				Atom:      ",",
-				TokenType: token.TokenTypeComma,
-			})
+			tokens = append(tokens, token.NewToken(
+				",",
+				token.TokenTypeComma,
+			))
 
 		default:
 			newToken, err := t.parseUnknownChar(next)
@@ -99,33 +99,27 @@ func (t *Tokenizer) Tokenize() ([]token.Token, error) {
 	return tokens, nil
 }
 
-func (t *Tokenizer) handleAsterisk() (token.Token, error) {
+func (t *Tokenizer) handleAsterisk() (*token.Token, error) {
 	next, err := t.Peek()
 
 	if err != nil {
-		return token.Token{}, err
+		return nil, err
 	}
 
 	if next == '*' {
 		_, err = t.GetNext()
 
 		if err != nil {
-			return token.Token{}, err
+			return nil, err
 		}
 
-		return token.Token{
-			Atom:      "**",
-			TokenType: token.TokenTypeOperationPow,
-		}, nil
+		return token.NewToken("**", token.TokenTypeOperationPow), nil
 	}
 
-	return token.Token{
-		Atom:      "*",
-		TokenType: token.TokenTypeOperationMul,
-	}, nil
+	return token.NewToken("*", token.TokenTypeOperationMul), nil
 }
 
-func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
+func (t *Tokenizer) parseIdentifier(firstChar rune) (*token.Token, error) {
 	identifier := string(firstChar)
 
 	for !t.isEOF {
@@ -141,7 +135,7 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
 			_, err = t.GetNext()
 
 			if err != nil {
-				return token.Token{}, err
+				return nil, err
 			}
 
 			identifier += string(next)
@@ -152,18 +146,15 @@ func (t *Tokenizer) parseIdentifier(firstChar rune) (token.Token, error) {
 		break
 	}
 
-	return token.Token{
-		Atom:      identifier,
-		TokenType: token.TokenTypeIdentifier,
-	}, nil
+	return token.NewToken(identifier, token.TokenTypeIdentifier), nil
 }
 
-func (t *Tokenizer) parseUnknownChar(next rune) (token.Token, error) {
+func (t *Tokenizer) parseUnknownChar(next rune) (*token.Token, error) {
 	if unicode.IsLetter(rune(next)) || next == '_' {
 		return t.parseIdentifier(rune(next))
 	}
 
-	return token.Token{}, errorutil.NewError(
+	return nil, errorutil.NewError(
 		errorutil.ErrorMsgUnexpectedChar,
 		string(next),
 		t.expIdx,

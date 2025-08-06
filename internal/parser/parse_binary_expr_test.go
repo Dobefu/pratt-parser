@@ -79,7 +79,7 @@ func TestParseBinaryExprErr(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		_, err := NewParser([]token.Token{}).parseBinaryExpr(
+		_, err := NewParser([]*token.Token{}).parseBinaryExpr(
 			test.operatorToken,
 			test.leftExpr,
 			test.rightToken,
@@ -102,7 +102,7 @@ func TestParseBinaryExprErr(t *testing.T) {
 
 func BenchmarkParseBinaryExpr(b *testing.B) {
 	for b.Loop() {
-		p := NewParser([]token.Token{})
+		p := NewParser([]*token.Token{})
 
 		_, _ = p.parseBinaryExpr(
 			&token.Token{

@@ -11,5 +11,5 @@ func (p *Parser) PeekNextToken() (*token.Token, error) {
 		return nil, errorutil.NewError(errorutil.ErrorMsgUnexpectedEOF)
 	}
 
-	return &p.tokens[p.tokenIdx], nil
+	return p.tokens[p.tokenIdx], nil
 }

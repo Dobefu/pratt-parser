@@ -17,7 +17,7 @@ const (
 	NumberFlagExponent
 )
 
-func (t *Tokenizer) parseNumber(current rune) (token.Token, error) {
+func (t *Tokenizer) parseNumber(current rune) (*token.Token, error) {
 	var errMsg errorutil.ErrorMsg
 
 	var number strings.Builder
@@ -39,7 +39,7 @@ GETNEXT:
 		next, err := t.Peek()
 
 		if err != nil {
-			return token.Token{}, err
+			return nil, err
 		}
 
 		literalNumber.WriteRune(next)
@@ -92,7 +92,7 @@ GETNEXT:
 		_, err = t.GetNext()
 
 		if err != nil {
-			return token.Token{}, err
+			return nil, err
 		}
 
 		lastChar = next
@@ -103,13 +103,10 @@ GETNEXT:
 	}
 
 	if errMsg != "" {
-		return token.Token{}, errorutil.NewError(errMsg, literalNumber.String())
+		return nil, errorutil.NewError(errMsg, literalNumber.String())
 	}
 
-	return token.Token{
-		Atom:      number.String(),
-		TokenType: token.TokenTypeNumber,
-	}, nil
+	return token.NewToken(number.String(), token.TokenTypeNumber), nil
 }
 
 func (t *Tokenizer) handleUnderscore(

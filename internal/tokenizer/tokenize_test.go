@@ -9,11 +9,8 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-func tokenizeTestGetNumberToken(atom string) token.Token {
-	return token.Token{
-		Atom:      atom,
-		TokenType: token.TokenTypeNumber,
-	}
+func tokenizeTestGetNumberToken(atom string) *token.Token {
+	return token.NewToken(atom, token.TokenTypeNumber)
 }
 
 func TestTokenize(t *testing.T) {
@@ -21,31 +18,31 @@ func TestTokenize(t *testing.T) {
 
 	tests := []struct {
 		input    string
-		expected []token.Token
+		expected []*token.Token
 	}{
 		{
 			input:    "1",
-			expected: []token.Token{tokenizeTestGetNumberToken("1")},
+			expected: []*token.Token{tokenizeTestGetNumberToken("1")},
 		},
 		{
 			input:    "1e0",
-			expected: []token.Token{tokenizeTestGetNumberToken("1e0")},
+			expected: []*token.Token{tokenizeTestGetNumberToken("1e0")},
 		},
 		{
 			input:    "1e5",
-			expected: []token.Token{tokenizeTestGetNumberToken("1e5")},
+			expected: []*token.Token{tokenizeTestGetNumberToken("1e5")},
 		},
 		{
 			input:    "1e+6",
-			expected: []token.Token{tokenizeTestGetNumberToken("1e6")},
+			expected: []*token.Token{tokenizeTestGetNumberToken("1e6")},
 		},
 		{
 			input:    "1.2E-8",
-			expected: []token.Token{tokenizeTestGetNumberToken("1.2E-8")},
+			expected: []*token.Token{tokenizeTestGetNumberToken("1.2E-8")},
 		},
 		{
 			input: "1 + 1",
-			expected: []token.Token{
+			expected: []*token.Token{
 				tokenizeTestGetNumberToken("1"),
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 				tokenizeTestGetNumberToken("1"),
@@ -53,7 +50,7 @@ func TestTokenize(t *testing.T) {
 		},
 		{
 			input: "2 ** 2",
-			expected: []token.Token{
+			expected: []*token.Token{
 				tokenizeTestGetNumberToken("2"),
 				{Atom: "**", TokenType: token.TokenTypeOperationPow},
 				tokenizeTestGetNumberToken("2"),
@@ -61,7 +58,7 @@ func TestTokenize(t *testing.T) {
 		},
 		{
 			input: "10 % 3",
-			expected: []token.Token{
+			expected: []*token.Token{
 				tokenizeTestGetNumberToken("10"),
 				{Atom: "%", TokenType: token.TokenTypeOperationMod},
 				tokenizeTestGetNumberToken("3"),
@@ -69,7 +66,7 @@ func TestTokenize(t *testing.T) {
 		},
 		{
 			input: "1 + 2 * 3 / 4",
-			expected: []token.Token{
+			expected: []*token.Token{
 				tokenizeTestGetNumberToken("1"),
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
 				tokenizeTestGetNumberToken("2"),
@@ -81,7 +78,7 @@ func TestTokenize(t *testing.T) {
 		},
 		{
 			input: "4 - 5",
-			expected: []token.Token{
+			expected: []*token.Token{
 				tokenizeTestGetNumberToken("4"),
 				{Atom: "-", TokenType: token.TokenTypeOperationSub},
 				tokenizeTestGetNumberToken("5"),
@@ -89,14 +86,14 @@ func TestTokenize(t *testing.T) {
 		},
 		{
 			input: "()",
-			expected: []token.Token{
+			expected: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: ")", TokenType: token.TokenTypeRParen},
 			},
 		},
 		{
 			input: "min(1, 2)",
-			expected: []token.Token{
+			expected: []*token.Token{
 				{Atom: "min", TokenType: token.TokenTypeIdentifier},
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				tokenizeTestGetNumberToken("1"),
