@@ -10,7 +10,12 @@ const (
 	bindingPowerUnary          = 300
 	bindingPowerMultiplicative = 200
 	bindingPowerAdditive       = 100
-	bindingPowerDefault        = 0
+
+	// For right-hand associativity, a value of 1 is subtracted from the
+	// binding power of the next token.
+	// To prevent the binding power from being negative, a value of 1 is
+	// added to the default binding power.
+	bindingPowerDefault = 1
 )
 
 // getBindingPower returns the binding power of the current token.
