@@ -17,6 +17,7 @@
 - `TAU` - τ (2π)
 - `E` - Euler's number
 - `PHI` - Golden ratio
+- `LN2` - Natural logarithm of 2
 
 ## Supported functions
 

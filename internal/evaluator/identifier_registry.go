@@ -29,4 +29,9 @@ var identifierRegistry = map[string]identifierInfo{
 			return math.Phi, nil
 		},
 	},
+	"LN2": {
+		handler: func() (float64, error) {
+			return math.Ln2, nil
+		},
+	},
 }
