@@ -6,17 +6,15 @@ import (
 
 // Pool provides a thread-safe pool of tokens.
 type Pool struct {
-	pool     map[string]*Token
-	poolSize int
-	mu       sync.RWMutex
+	pool map[string]*Token
+	mu   sync.RWMutex
 }
 
 // NewPool creates a new token pool with some pre-allocated common tokens.
 func NewPool() *Pool {
 	p := &Pool{
-		pool:     make(map[string]*Token),
-		poolSize: 0,
-		mu:       sync.RWMutex{},
+		pool: make(map[string]*Token),
+		mu:   sync.RWMutex{},
 	}
 
 	commonTokens := []struct {
@@ -36,7 +34,6 @@ func NewPool() *Pool {
 
 	for _, t := range commonTokens {
 		p.pool[t.atom] = NewToken(t.atom, t.tokenType)
-		p.poolSize++
 	}
 
 	return p
@@ -48,7 +45,13 @@ func (p *Pool) GetToken(atom string, tokenType Type) *Token {
 		return token
 	}
 
-	return NewToken(atom, tokenType)
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	token := NewToken(atom, tokenType)
+	p.pool[atom] = token
+
+	return token
 }
 
 // GetPoolSize returns the current size of the pool.
@@ -56,7 +59,7 @@ func (p *Pool) GetPoolSize() int {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
-	return p.poolSize
+	return len(p.pool)
 }
 
 func (p *Pool) getFromPool(atom string) (*Token, bool) {
