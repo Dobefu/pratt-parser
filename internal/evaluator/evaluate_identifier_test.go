@@ -32,6 +32,14 @@ func TestEvaluateIdentifier(t *testing.T) {
 			input:    &ast.Identifier{Value: "PHI"},
 			expected: math.Phi,
 		},
+		{
+			input:    &ast.Identifier{Value: "LN2"},
+			expected: math.Ln2,
+		},
+		{
+			input:    &ast.Identifier{Value: "LN10"},
+			expected: math.Ln10,
+		},
 	}
 
 	for _, test := range tests {

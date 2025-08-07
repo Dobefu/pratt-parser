@@ -16,8 +16,9 @@
 - `PI` - π
 - `TAU` - τ (2π)
 - `E` - Euler's number
-- `PHI` - Golden ratio
+- `PHI` - φ Golden ratio
 - `LN2` - Natural logarithm of 2
+- `LN10` - Natural logarithm of 10
 
 ## Supported functions
 
