@@ -15,8 +15,9 @@ func TestFunctionCall(t *testing.T) {
 			input: &FunctionCall{
 				FunctionName: "abs",
 				Arguments: []ExprNode{
-					&NumberLiteral{Value: "1"},
+					&NumberLiteral{Value: "1", Pos: 0},
 				},
+				Pos: 0,
 			},
 			expected: "abs(1)",
 		},
@@ -24,9 +25,10 @@ func TestFunctionCall(t *testing.T) {
 			input: &FunctionCall{
 				FunctionName: "max",
 				Arguments: []ExprNode{
-					&NumberLiteral{Value: "1"},
-					&NumberLiteral{Value: "2"},
+					&NumberLiteral{Value: "1", Pos: 0},
+					&NumberLiteral{Value: "2", Pos: 2},
 				},
+				Pos: 0,
 			},
 			expected: "max(1, 2)",
 		},

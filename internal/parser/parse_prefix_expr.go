@@ -24,8 +24,9 @@ func (p *Parser) parsePrefixExpr(
 		return p.parseFunctionCallOrIdentifier(currentToken, recursionDepth)
 
 	default:
-		return nil, errorutil.NewError(
+		return nil, errorutil.NewErrorAt(
 			errorutil.ErrorMsgUnexpectedToken,
+			p.tokenIdx,
 			currentToken.Atom,
 		)
 	}
@@ -54,6 +55,7 @@ func (p *Parser) parseUnaryOperator(
 	return &ast.PrefixExpr{
 		Operator: *operatorToken,
 		Operand:  operand,
+		Pos:      p.tokenIdx - 1,
 	}, nil
 }
 
@@ -75,12 +77,13 @@ func (p *Parser) parseParenthesizedExpr(
 	rparenToken, err := p.GetNextToken()
 
 	if err != nil {
-		return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
+		return nil, errorutil.NewErrorAt(errorutil.ErrorMsgParenNotClosedAtEOF, p.tokenIdx)
 	}
 
 	if rparenToken.TokenType != token.TokenTypeRParen {
-		return nil, errorutil.NewError(
+		return nil, errorutil.NewErrorAt(
 			errorutil.ErrorMsgExpectedCloseParen,
+			p.tokenIdx,
 			rparenToken.Atom,
 		)
 	}
@@ -103,7 +106,7 @@ func (p *Parser) parseFunctionCallOrIdentifier(
 	}
 
 	if nextToken.TokenType == token.TokenTypeLParen {
-		return p.parseFunctionCall(functionCallOrIdentifierToken.Atom, recursionDepth+1)
+		return p.parseFunctionCall(functionCallOrIdentifierToken.Atom, p.tokenIdx-1, recursionDepth+1)
 	}
 
 	return p.parseIdentifier(functionCallOrIdentifierToken)

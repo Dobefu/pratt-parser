@@ -24,7 +24,8 @@ func TestParsePrefixExpr(t *testing.T) {
 			},
 			expected: &ast.PrefixExpr{
 				Operator: token.Token{Atom: "+", TokenType: token.TokenTypeOperationAdd},
-				Operand:  &ast.NumberLiteral{Value: "1"},
+				Operand:  &ast.NumberLiteral{Value: "1", Pos: 1},
+				Pos:      0,
 			},
 		},
 		{
@@ -34,7 +35,8 @@ func TestParsePrefixExpr(t *testing.T) {
 			},
 			expected: &ast.PrefixExpr{
 				Operator: token.Token{Atom: "-", TokenType: token.TokenTypeOperationSub},
-				Operand:  &ast.NumberLiteral{Value: "PI"},
+				Operand:  &ast.NumberLiteral{Value: "PI", Pos: 1},
+				Pos:      0,
 			},
 		},
 		{
@@ -47,7 +49,8 @@ func TestParsePrefixExpr(t *testing.T) {
 			},
 			expected: &ast.PrefixExpr{
 				Operator: token.Token{Atom: "-", TokenType: token.TokenTypeOperationSub},
-				Operand:  &ast.NumberLiteral{Value: "abs(1)"},
+				Operand:  &ast.NumberLiteral{Value: "abs(1)", Pos: 4},
+				Pos:      0,
 			},
 		},
 	}

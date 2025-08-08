@@ -26,7 +26,8 @@ func TestParseFunctionCall(t *testing.T) {
 			},
 			expected: &ast.FunctionCall{
 				FunctionName: "abs",
-				Arguments:    []ast.ExprNode{&ast.NumberLiteral{Value: "1"}},
+				Arguments:    []ast.ExprNode{&ast.NumberLiteral{Value: "1", Pos: 1}},
+				Pos:          0,
 			},
 		},
 		{
@@ -40,9 +41,10 @@ func TestParseFunctionCall(t *testing.T) {
 			expected: &ast.FunctionCall{
 				FunctionName: "abs",
 				Arguments: []ast.ExprNode{
-					&ast.NumberLiteral{Value: "1"},
-					&ast.NumberLiteral{Value: "1"},
+					&ast.NumberLiteral{Value: "1", Pos: 1},
+					&ast.NumberLiteral{Value: "1", Pos: 3},
 				},
+				Pos: 0,
 			},
 		},
 	}
@@ -50,7 +52,7 @@ func TestParseFunctionCall(t *testing.T) {
 	for _, test := range tests {
 		parser := NewParser(test.input)
 
-		expr, err := parser.parseFunctionCall("abs", 0)
+		expr, err := parser.parseFunctionCall("abs", 0, 0)
 
 		if err != nil {
 			t.Errorf("expected no error, got \"%v\"", err)
@@ -104,7 +106,7 @@ func TestParseFunctionCallErr(t *testing.T) {
 
 	for _, test := range tests {
 		parser := NewParser(test.input)
-		_, err := parser.parseFunctionCall("abs", 0)
+		_, err := parser.parseFunctionCall("abs", 0, 0)
 
 		if err == nil {
 			t.Fatalf("expected error, got none for input \"%v\"", test.input)
@@ -128,6 +130,6 @@ func BenchmarkParseFunctionCall(b *testing.B) {
 			{Atom: ",", TokenType: token.TokenTypeComma},
 			{Atom: "2", TokenType: token.TokenTypeNumber},
 			{Atom: ")", TokenType: token.TokenTypeRParen},
-		}).parseFunctionCall("min", 0)
+		}).parseFunctionCall("min", 0, 0)
 	}
 }

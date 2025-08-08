@@ -6,7 +6,11 @@ import (
 	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
-func (p *Parser) parseFunctionCall(functionName string, recursionDepth int) (ast.ExprNode, error) {
+func (p *Parser) parseFunctionCall(
+	functionName string,
+	functionPos int,
+	recursionDepth int,
+) (ast.ExprNode, error) {
 	lparenToken, err := p.GetNextToken()
 
 	if err != nil {
@@ -14,8 +18,9 @@ func (p *Parser) parseFunctionCall(functionName string, recursionDepth int) (ast
 	}
 
 	if lparenToken.TokenType != token.TokenTypeLParen {
-		return nil, errorutil.NewError(
+		return nil, errorutil.NewErrorAt(
 			errorutil.ErrorMsgExpectedOpenParen,
+			p.tokenIdx,
 			lparenToken.Atom,
 		)
 	}
@@ -23,7 +28,7 @@ func (p *Parser) parseFunctionCall(functionName string, recursionDepth int) (ast
 	nextToken, err := p.PeekNextToken()
 
 	if err != nil {
-		return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
+		return nil, errorutil.NewErrorAt(errorutil.ErrorMsgParenNotClosedAtEOF, p.tokenIdx)
 	}
 
 	var args []ast.ExprNode
@@ -43,12 +48,13 @@ func (p *Parser) parseFunctionCall(functionName string, recursionDepth int) (ast
 	}
 
 	if rparenToken.TokenType != token.TokenTypeRParen {
-		return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
+		return nil, errorutil.NewErrorAt(errorutil.ErrorMsgParenNotClosedAtEOF, p.tokenIdx)
 	}
 
 	return &ast.FunctionCall{
 		FunctionName: functionName,
 		Arguments:    args,
+		Pos:          functionPos,
 	}, nil
 }
 
@@ -76,7 +82,7 @@ func (p *Parser) parseFunctionCallArguments(
 		nextToken, err := p.PeekNextToken()
 
 		if err != nil {
-			return nil, errorutil.NewError(errorutil.ErrorMsgParenNotClosedAtEOF)
+			return nil, errorutil.NewErrorAt(errorutil.ErrorMsgParenNotClosedAtEOF, p.tokenIdx)
 		}
 
 		if nextToken.TokenType == token.TokenTypeRParen {
@@ -84,8 +90,9 @@ func (p *Parser) parseFunctionCallArguments(
 		}
 
 		if nextToken.TokenType != token.TokenTypeComma {
-			return nil, errorutil.NewError(
+			return nil, errorutil.NewErrorAt(
 				errorutil.ErrorMsgUnexpectedToken,
+				p.tokenIdx,
 				nextToken.Atom,
 			)
 		}

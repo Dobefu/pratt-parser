@@ -9,13 +9,13 @@ import (
 // GetNext gets the next character in the expression.
 func (t *Tokenizer) GetNext() (rune, error) {
 	if t.isEOF {
-		return 0, errorutil.NewError(errorutil.ErrorMsgUnexpectedEOF)
+		return 0, errorutil.NewErrorAt(errorutil.ErrorMsgUnexpectedEOF, t.expIdx)
 	}
 
 	r, size := utf8.DecodeRuneInString(t.exp[t.byteIdx:])
 
 	if r == utf8.RuneError {
-		return 0, errorutil.NewError(errorutil.ErrorMsgInvalidUTF8Char)
+		return 0, errorutil.NewErrorAt(errorutil.ErrorMsgInvalidUTF8Char, t.expIdx)
 	}
 
 	t.byteIdx += size

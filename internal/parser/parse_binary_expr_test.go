@@ -21,12 +21,13 @@ func TestParseBinaryExpr(t *testing.T) {
 		{
 			input: "1 + 1",
 			expected: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "1"},
-				Right: &ast.NumberLiteral{Value: "1"},
+				Left:  &ast.NumberLiteral{Value: "1", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "1", Pos: 2},
 				Operator: token.Token{
 					Atom:      "+",
 					TokenType: token.TokenTypeOperationAdd,
 				},
+				Pos: 0,
 			},
 		},
 	}
@@ -73,7 +74,7 @@ func TestParseBinaryExprErr(t *testing.T) {
 				Atom:      "/",
 				TokenType: token.TokenTypeOperationDiv,
 			},
-			leftExpr:   &ast.NumberLiteral{Value: "1"},
+			leftExpr:   &ast.NumberLiteral{Value: "1", Pos: 0},
 			rightToken: &token.Token{Atom: "/", TokenType: token.TokenTypeOperationDiv},
 			expected:   fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, "/"),
 		},

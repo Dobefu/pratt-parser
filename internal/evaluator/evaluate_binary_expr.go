@@ -22,11 +22,11 @@ func (e *Evaluator) evaluateBinaryExpr(node *ast.BinaryExpr) (float64, error) {
 	}
 
 	if node.Operator.TokenType == token.TokenTypeOperationDiv && rightEvaluated == 0 {
-		return 0, errorutil.NewError(errorutil.ErrorMsgDivByZero)
+		return 0, errorutil.NewErrorAt(errorutil.ErrorMsgDivByZero, node.Position())
 	}
 
 	if node.Operator.TokenType == token.TokenTypeOperationMod && rightEvaluated == 0 {
-		return 0, errorutil.NewError(errorutil.ErrorMsgModByZero)
+		return 0, errorutil.NewErrorAt(errorutil.ErrorMsgModByZero, node.Position())
 	}
 
 	switch node.Operator.TokenType {
@@ -49,8 +49,9 @@ func (e *Evaluator) evaluateBinaryExpr(node *ast.BinaryExpr) (float64, error) {
 		return math.Pow(leftEvaluated, rightEvaluated), nil
 
 	default:
-		return 0, errorutil.NewError(
+		return 0, errorutil.NewErrorAt(
 			errorutil.ErrorMsgUnknownOperator,
+			node.Position(),
 			node.Operator.Atom,
 		)
 	}

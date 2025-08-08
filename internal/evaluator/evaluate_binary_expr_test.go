@@ -19,67 +19,73 @@ func TestEvaluateBinaryExpr(t *testing.T) {
 	}{
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "5"},
-				Right: &ast.NumberLiteral{Value: "5"},
+				Left:  &ast.NumberLiteral{Value: "5", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "5", Pos: 2},
 				Operator: token.Token{
 					Atom:      "+",
 					TokenType: token.TokenTypeOperationAdd,
 				},
+				Pos: 1,
 			},
 			expected: 10,
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "5"},
-				Right: &ast.NumberLiteral{Value: "5"},
+				Left:  &ast.NumberLiteral{Value: "5", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "5", Pos: 2},
 				Operator: token.Token{
 					Atom:      "-",
 					TokenType: token.TokenTypeOperationSub,
 				},
+				Pos: 1,
 			},
 			expected: 0,
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "5"},
-				Right: &ast.NumberLiteral{Value: "5"},
+				Left:  &ast.NumberLiteral{Value: "5", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "5", Pos: 2},
 				Operator: token.Token{
 					Atom:      "*",
 					TokenType: token.TokenTypeOperationMul,
 				},
+				Pos: 1,
 			},
 			expected: 25,
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "5"},
-				Right: &ast.NumberLiteral{Value: "5"},
+				Left:  &ast.NumberLiteral{Value: "5", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "5", Pos: 2},
 				Operator: token.Token{
 					Atom:      "/",
 					TokenType: token.TokenTypeOperationDiv,
 				},
+				Pos: 1,
 			},
 			expected: 1,
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "5"},
-				Right: &ast.NumberLiteral{Value: "5"},
+				Left:  &ast.NumberLiteral{Value: "5", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "5", Pos: 2},
 				Operator: token.Token{
 					Atom:      "%",
 					TokenType: token.TokenTypeOperationMod,
 				},
+				Pos: 1,
 			},
 			expected: 0,
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "5"},
-				Right: &ast.NumberLiteral{Value: "5"},
+				Left:  &ast.NumberLiteral{Value: "5", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "5", Pos: 2},
 				Operator: token.Token{
 					Atom:      "^",
 					TokenType: token.TokenTypeOperationPow,
 				},
+				Pos: 1,
 			},
 			expected: 3125,
 		},
@@ -108,55 +114,60 @@ func TestEvaluateBinaryExprErr(t *testing.T) {
 		{
 			input: &ast.BinaryExpr{
 				Left:  nil,
-				Right: &ast.NumberLiteral{Value: "5"},
+				Right: &ast.NumberLiteral{Value: "5", Pos: 2},
 				Operator: token.Token{
 					Atom:      "+",
 					TokenType: token.TokenTypeOperationAdd,
 				},
+				Pos: 1,
 			},
 			expected: fmt.Sprintf(errorutil.ErrorMsgUnknownNodeType, nil),
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "5"},
+				Left:  &ast.NumberLiteral{Value: "5", Pos: 0},
 				Right: nil,
 				Operator: token.Token{
 					Atom:      "+",
 					TokenType: token.TokenTypeOperationAdd,
 				},
+				Pos: 1,
 			},
 			expected: fmt.Sprintf(errorutil.ErrorMsgUnknownNodeType, nil),
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "0"},
-				Right: &ast.NumberLiteral{Value: "0"},
+				Left:  &ast.NumberLiteral{Value: "0", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "0", Pos: 2},
 				Operator: token.Token{
 					Atom:      "/",
 					TokenType: token.TokenTypeOperationDiv,
 				},
+				Pos: 1,
 			},
 			expected: errorutil.ErrorMsgDivByZero,
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "0"},
-				Right: &ast.NumberLiteral{Value: "0"},
+				Left:  &ast.NumberLiteral{Value: "0", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "0", Pos: 2},
 				Operator: token.Token{
 					Atom:      "%",
 					TokenType: token.TokenTypeOperationMod,
 				},
+				Pos: 1,
 			},
 			expected: errorutil.ErrorMsgModByZero,
 		},
 		{
 			input: &ast.BinaryExpr{
-				Left:  &ast.NumberLiteral{Value: "0"},
-				Right: &ast.NumberLiteral{Value: "0"},
+				Left:  &ast.NumberLiteral{Value: "0", Pos: 0},
+				Right: &ast.NumberLiteral{Value: "0", Pos: 2},
 				Operator: token.Token{
 					Atom:      ",",
 					TokenType: token.TokenTypeComma,
 				},
+				Pos: 1,
 			},
 			expected: fmt.Sprintf(errorutil.ErrorMsgUnknownOperator, ","),
 		},

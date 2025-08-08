@@ -11,7 +11,7 @@ func (e *Evaluator) evaluateIdentifier(
 	identifier, ok := identifierRegistry[i.Value]
 
 	if !ok {
-		return 0, errorutil.NewError(errorutil.ErrorMsgUndefinedIdentifier, i.Value)
+		return 0, errorutil.NewErrorAt(errorutil.ErrorMsgUndefinedIdentifier, i.Position(), i.Value)
 	}
 
 	return identifier.handler()

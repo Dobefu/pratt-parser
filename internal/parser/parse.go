@@ -8,7 +8,7 @@ import (
 // Parse parses the expression string supplied in the struct.
 func (p *Parser) Parse() (ast.ExprNode, error) {
 	if len(p.tokens) <= 0 {
-		return nil, errorutil.NewError(errorutil.ErrorMsgEmptyExpression)
+		return nil, errorutil.NewErrorAt(errorutil.ErrorMsgEmptyExpression, 0)
 	}
 
 	nextToken, err := p.GetNextToken()

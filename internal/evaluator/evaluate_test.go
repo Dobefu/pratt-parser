@@ -17,9 +17,9 @@ func TestEvaluate(t *testing.T) {
 	}{
 		{
 			input: &ast.BinaryExpr{
-				Left: &ast.NumberLiteral{Value: "5"},
+				Left: &ast.NumberLiteral{Value: "5", Pos: 0},
 				Right: &ast.BinaryExpr{
-					Left: &ast.NumberLiteral{Value: "5"},
+					Left: &ast.NumberLiteral{Value: "5", Pos: 2},
 					Right: &ast.PrefixExpr{
 						Operator: token.Token{
 							Atom:      "-",
@@ -28,19 +28,23 @@ func TestEvaluate(t *testing.T) {
 						Operand: &ast.FunctionCall{
 							FunctionName: "abs",
 							Arguments: []ast.ExprNode{
-								&ast.Identifier{Value: "PI"},
+								&ast.Identifier{Value: "PI", Pos: 4},
 							},
+							Pos: 0,
 						},
+						Pos: 0,
 					},
 					Operator: token.Token{
 						Atom:      "+",
 						TokenType: token.TokenTypeOperationAdd,
 					},
+					Pos: 0,
 				},
 				Operator: token.Token{
 					Atom:      "+",
 					TokenType: token.TokenTypeOperationAdd,
 				},
+				Pos: 0,
 			},
 			expected: 5 + math.Abs(-5+math.Pi),
 		},
@@ -63,20 +67,24 @@ func BenchmarkEvaluate(b *testing.B) {
 	for b.Loop() {
 		_, _ = NewEvaluator().Evaluate(
 			&ast.BinaryExpr{
-				Left: &ast.NumberLiteral{Value: "1"},
+				Left: &ast.NumberLiteral{Value: "1", Pos: 0},
 				Right: &ast.BinaryExpr{
 					Left: &ast.PrefixExpr{
 						Operator: *token.NewToken("-", token.TokenTypeOperationSub),
-						Operand:  &ast.NumberLiteral{Value: "2"},
+						Operand:  &ast.NumberLiteral{Value: "2", Pos: 2},
+						Pos:      0,
 					},
 					Right: &ast.BinaryExpr{
-						Left:     &ast.NumberLiteral{Value: "3"},
-						Right:    &ast.NumberLiteral{Value: "4"},
+						Left:     &ast.NumberLiteral{Value: "3", Pos: 4},
+						Right:    &ast.NumberLiteral{Value: "4", Pos: 6},
 						Operator: *token.NewToken("/", token.TokenTypeOperationDiv),
+						Pos:      0,
 					},
 					Operator: *token.NewToken("*", token.TokenTypeOperationMul),
+					Pos:      0,
 				},
 				Operator: *token.NewToken("+", token.TokenTypeOperationAdd),
+				Pos:      0,
 			},
 		)
 	}

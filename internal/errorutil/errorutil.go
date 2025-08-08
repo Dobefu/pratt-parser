@@ -66,6 +66,14 @@ func NewError(msg ErrorMsg, args ...any) *Error {
 	}
 }
 
+// NewErrorAt creates a new error with the given message at a specific position.
+func NewErrorAt(msg ErrorMsg, pos int, args ...any) *Error {
+	return &Error{
+		msg: ErrorMsg(fmt.Sprintf(string(msg), args...)),
+		pos: pos,
+	}
+}
+
 // Error returns the error message with the position information.
 func (e *Error) Error() string {
 	// If the position is less than 0, there's no position information to return.

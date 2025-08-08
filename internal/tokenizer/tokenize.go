@@ -156,8 +156,9 @@ func (t *Tokenizer) parseUnknownChar(next rune) (*token.Token, error) {
 		return t.parseIdentifier(rune(next))
 	}
 
-	return nil, errorutil.NewError(
+	return nil, errorutil.NewErrorAt(
 		errorutil.ErrorMsgUnexpectedChar,
+		t.expIdx,
 		string(next),
 	)
 }

@@ -12,7 +12,7 @@ func TestIdentifier(t *testing.T) {
 		expected string
 	}{
 		{
-			input:    &Identifier{Value: "PI"},
+			input:    &Identifier{Value: "PI", Pos: 0},
 			expected: "PI",
 		},
 	}

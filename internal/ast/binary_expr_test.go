@@ -15,12 +15,13 @@ func TestBinaryExpr(t *testing.T) {
 	}{
 		{
 			input: &BinaryExpr{
-				Left:  &NumberLiteral{Value: "1"},
-				Right: &NumberLiteral{Value: "1"},
+				Left:  &NumberLiteral{Value: "1", Pos: 0},
+				Right: &NumberLiteral{Value: "1", Pos: 2},
 				Operator: token.Token{
 					Atom:      "+",
 					TokenType: token.TokenTypeOperationAdd,
 				},
+				Pos: 0,
 			},
 			expected: "(1 + 1)",
 		},

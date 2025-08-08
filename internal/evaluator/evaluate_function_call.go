@@ -11,8 +11,9 @@ func (e *Evaluator) evaluateFunctionCall(
 	function, ok := functionRegistry[fc.FunctionName]
 
 	if !ok {
-		return 0, errorutil.NewError(
+		return 0, errorutil.NewErrorAt(
 			errorutil.ErrorMsgUndefinedFunction,
+			fc.Position(),
 			fc.FunctionName,
 		)
 	}
@@ -21,6 +22,7 @@ func (e *Evaluator) evaluateFunctionCall(
 		fc.Arguments,
 		function.argCount,
 		fc.FunctionName,
+		fc,
 	)
 
 	if err != nil {
@@ -34,6 +36,7 @@ func (e *Evaluator) evaluateArguments(
 	args []ast.ExprNode,
 	expectedCount int,
 	functionName string,
+	fc *ast.FunctionCall,
 ) ([]float64, error) {
 	argValues := make([]float64, len(args))
 
@@ -48,8 +51,9 @@ func (e *Evaluator) evaluateArguments(
 	}
 
 	if expectedCount > 0 && len(argValues) != expectedCount {
-		return nil, errorutil.NewError(
+		return nil, errorutil.NewErrorAt(
 			errorutil.ErrorMsgFunctionNumArgs,
+			fc.Position(),
 			functionName,
 			expectedCount,
 			len(argValues),

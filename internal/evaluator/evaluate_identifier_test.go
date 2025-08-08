@@ -18,27 +18,27 @@ func TestEvaluateIdentifier(t *testing.T) {
 		expected float64
 	}{
 		{
-			input:    &ast.Identifier{Value: "PI"},
+			input:    &ast.Identifier{Value: "PI", Pos: 0},
 			expected: math.Pi,
 		},
 		{
-			input:    &ast.Identifier{Value: "TAU"},
+			input:    &ast.Identifier{Value: "TAU", Pos: 0},
 			expected: math.Pi * 2,
 		},
 		{
-			input:    &ast.Identifier{Value: "E"},
+			input:    &ast.Identifier{Value: "E", Pos: 0},
 			expected: math.E,
 		},
 		{
-			input:    &ast.Identifier{Value: "PHI"},
+			input:    &ast.Identifier{Value: "PHI", Pos: 0},
 			expected: math.Phi,
 		},
 		{
-			input:    &ast.Identifier{Value: "LN2"},
+			input:    &ast.Identifier{Value: "LN2", Pos: 0},
 			expected: math.Ln2,
 		},
 		{
-			input:    &ast.Identifier{Value: "LN10"},
+			input:    &ast.Identifier{Value: "LN10", Pos: 0},
 			expected: math.Ln10,
 		},
 	}
@@ -64,7 +64,7 @@ func TestEvaluateIdentifierErr(t *testing.T) {
 		expected string
 	}{
 		{
-			input:    &ast.Identifier{Value: "bogus"},
+			input:    &ast.Identifier{Value: "bogus", Pos: 0},
 			expected: fmt.Sprintf(errorutil.ErrorMsgUndefinedIdentifier, "bogus"),
 		},
 	}

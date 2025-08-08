@@ -9,6 +9,7 @@ import (
 type FunctionCall struct {
 	FunctionName string
 	Arguments    []ExprNode
+	Pos          int
 }
 
 // Expr returns the expression of the function call.
@@ -24,4 +25,9 @@ func (fc *FunctionCall) Expr() string {
 	}
 
 	return fmt.Sprintf("%s(%s)", fc.FunctionName, args.String())
+}
+
+// Position returns the position of the function call.
+func (fc *FunctionCall) Position() int {
+	return fc.Pos
 }

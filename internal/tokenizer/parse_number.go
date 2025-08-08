@@ -118,7 +118,7 @@ func (t *Tokenizer) createNumberErr(errMsg errorutil.ErrorMsg, literalStartIdx, 
 
 	literalString := t.exp[literalStartIdx:literalEndIdx]
 
-	return errorutil.NewError(errMsg, literalString)
+	return errorutil.NewErrorAt(errMsg, literalStartIdx, literalString)
 }
 
 func (t *Tokenizer) handleUnderscore(

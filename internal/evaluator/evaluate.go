@@ -24,6 +24,12 @@ func (e *Evaluator) Evaluate(currentAst ast.ExprNode) (float64, error) {
 		return e.evaluateIdentifier(node)
 
 	default:
-		return 0, errorutil.NewError(errorutil.ErrorMsgUnknownNodeType, node)
+		pos := -1
+
+		if node != nil {
+			pos = node.Position()
+		}
+
+		return 0, errorutil.NewErrorAt(errorutil.ErrorMsgUnknownNodeType, pos, node)
 	}
 }
