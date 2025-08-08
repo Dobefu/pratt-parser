@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -115,11 +116,11 @@ func TestParseErr(t *testing.T) {
 			t.Fatalf("expected error for \"%v\", got none", test.input)
 		}
 
-		if err.Error() != test.expected {
+		if errors.Unwrap(err).Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
-				err.Error(),
+				errors.Unwrap(err).Error(),
 			)
 		}
 	}

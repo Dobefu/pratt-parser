@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"testing"
@@ -141,7 +142,7 @@ func TestEvaluateFunctionCallErr(t *testing.T) {
 				"abs",
 				&ast.NumberLiteral{Value: "a"},
 			),
-			expected: `strconv.ParseFloat: parsing "a": invalid syntax`,
+			expected: "invalid syntax",
 		},
 	}
 
@@ -152,11 +153,11 @@ func TestEvaluateFunctionCallErr(t *testing.T) {
 			t.Fatalf("expected error, got nil")
 		}
 
-		if err.Error() != test.expected {
+		if errors.Unwrap(err).Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
-				err.Error(),
+				errors.Unwrap(err).Error(),
 			)
 		}
 	}

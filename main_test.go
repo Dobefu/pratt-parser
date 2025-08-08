@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"os"
 	"testing"
@@ -89,7 +90,11 @@ func TestMainErr(t *testing.T) {
 			args:    args,
 			outFile: io.Discard,
 			onError: func(err error) {
-				mainErr = err
+				mainErr = errors.Unwrap(err)
+
+				if mainErr == nil {
+					mainErr = err
+				}
 			},
 
 			result: 0,

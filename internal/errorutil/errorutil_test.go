@@ -1,6 +1,7 @@
 package errorutil
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -9,11 +10,11 @@ func TestErrorMsg(t *testing.T) {
 
 	err := NewError(ErrorMsgParenNotClosedAtEOF)
 
-	if err.Error() != ErrorMsgParenNotClosedAtEOF {
+	if errors.Unwrap(err).Error() != ErrorMsgParenNotClosedAtEOF {
 		t.Errorf(
 			"expected error to be '%s', got '%s'",
 			ErrorMsgParenNotClosedAtEOF,
-			err.Error(),
+			errors.Unwrap(err).Error(),
 		)
 	}
 }

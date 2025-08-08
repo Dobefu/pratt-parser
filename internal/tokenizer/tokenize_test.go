@@ -1,6 +1,7 @@
 package tokenizer
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
@@ -146,7 +147,7 @@ func TestTokenizeErr(t *testing.T) {
 		},
 		{
 			input:    "💔",
-			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedChar, "💔", 1),
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedChar, "💔"),
 		},
 		{
 			input:    "*",
@@ -161,11 +162,11 @@ func TestTokenizeErr(t *testing.T) {
 			t.Fatalf("expected error, got none for input %s", test.input)
 		}
 
-		if err.Error() != test.expected {
+		if errors.Unwrap(err).Error() != test.expected {
 			t.Errorf(
-				"expected error \"%v\", got \"%v\"",
+				"expected error \"%s\", got \"%s\"",
 				test.expected,
-				err.Error(),
+				errors.Unwrap(err).Error(),
 			)
 		}
 	}

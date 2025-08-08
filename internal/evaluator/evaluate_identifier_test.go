@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"testing"
@@ -75,11 +76,11 @@ func TestEvaluateIdentifierErr(t *testing.T) {
 			t.Fatalf("expected error, got nil")
 		}
 
-		if err.Error() != test.expected {
+		if errors.Unwrap(err).Error() != test.expected {
 			t.Errorf(
 				"expected error \"%s\", got \"%s\"",
 				test.expected,
-				err.Error(),
+				errors.Unwrap(err).Error(),
 			)
 		}
 	}

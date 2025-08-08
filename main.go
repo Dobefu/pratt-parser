@@ -78,6 +78,7 @@ func main() {
 		outFile: os.Stdout,
 		onError: func(err error) {
 			slog.Error(err.Error())
+
 			os.Exit(1)
 		},
 

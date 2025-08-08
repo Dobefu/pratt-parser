@@ -2,6 +2,7 @@
 package errorutil
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -36,7 +37,7 @@ const (
 	// ErrorMsgUnknownNodeType occurs when an unknown node type is encountered.
 	ErrorMsgUnknownNodeType = "unknown node type: '%T'"
 	// ErrorMsgUnexpectedChar occurs when an unexpected character is encountered.
-	ErrorMsgUnexpectedChar = "unexpected character: '%s' at position %d"
+	ErrorMsgUnexpectedChar = "unexpected character: '%s'"
 	// ErrorMsgFunctionNumArgs occurs when a function receives the wrong number of arguments.
 	ErrorMsgFunctionNumArgs = "'%s()' expects exactly %d argument(s), but got %d"
 	// ErrorMsgNumberTrailingChar occurs when a number has non-numeric trailing characters.
@@ -54,16 +55,33 @@ const (
 // Error represents an error with a message.
 type Error struct {
 	msg ErrorMsg
+	pos int
 }
 
 // NewError creates a new error with the given message.
 func NewError(msg ErrorMsg, args ...any) *Error {
 	return &Error{
 		msg: ErrorMsg(fmt.Sprintf(string(msg), args...)),
+		pos: -1,
 	}
 }
 
-// Error returns the error message.
+// Error returns the error message with the position information.
 func (e *Error) Error() string {
-	return string(e.msg)
+	// If the position is less than 0, there's no position information to return.
+	if e.pos < 0 {
+		return string(e.msg)
+	}
+
+	return fmt.Sprintf("%s at position %d", e.msg, e.pos)
+}
+
+// Unwrap returns the error message without any additional information.
+func (e *Error) Unwrap() error {
+	return errors.New(string(e.msg))
+}
+
+// Position gets the position of the error.
+func (e *Error) Position() int {
+	return e.pos
 }
