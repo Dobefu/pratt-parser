@@ -90,6 +90,14 @@ func TestParseFunctionCallErr(t *testing.T) {
 		{
 			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+			},
+			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
+		},
+		{
+			input: []*token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
 			expected: errorutil.ErrorMsgParenNotClosedAtEOF,
@@ -101,6 +109,14 @@ func TestParseFunctionCallErr(t *testing.T) {
 				{Atom: ",", TokenType: token.TokenTypeComma},
 			},
 			expected: errorutil.ErrorMsgUnexpectedEOF,
+		},
+		{
+			input: []*token.Token{
+				{Atom: "(", TokenType: token.TokenTypeLParen},
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "abs", TokenType: token.TokenTypeIdentifier},
+			},
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, "abs"),
 		},
 	}
 
