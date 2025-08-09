@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"testing"
@@ -10,6 +11,17 @@ import (
 )
 
 func TestMain(t *testing.T) {
+	t.Parallel()
+
+	originalOsArgs := os.Args
+	os.Args = []string{os.Args[0], "1 + 1"}
+
+	main()
+
+	os.Args = originalOsArgs
+}
+
+func TestMainRun(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -47,7 +59,7 @@ func TestMain(t *testing.T) {
 			args:    []string{os.Args[0], test.input},
 			outFile: io.Discard,
 			onError: func(err error) {
-				t.Errorf("expected no error, got %v", err)
+				t.Errorf("expected no error, got '%s'", err.Error())
 			},
 
 			result: 0,
@@ -76,6 +88,18 @@ func TestMainErr(t *testing.T) {
 			input:    "1 +",
 			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
+		{
+			input:    " ",
+			expected: errorutil.ErrorMsgEmptyExpression,
+		},
+		{
+			input:    "\x80",
+			expected: string(errorutil.ErrorMsgInvalidUTF8Char),
+		},
+		{
+			input:    "min(1)",
+			expected: fmt.Sprintf(errorutil.ErrorMsgFunctionNumArgs, "min", 2, 1),
+		},
 	}
 
 	for _, test := range tests {
@@ -103,16 +127,44 @@ func TestMainErr(t *testing.T) {
 		main.Run()
 
 		if mainErr == nil {
-			t.Fatalf("expected error, got none for input \"%s\"", test.input)
+			t.Fatalf("expected error, got none for input '%s'", test.input)
 		}
 
 		if mainErr.Error() != test.expected {
 			t.Errorf(
-				"expected error \"%s\", got \"%s\"",
+				"expected error '%s', got '%s'",
 				test.expected,
 				mainErr.Error(),
 			)
 		}
+	}
+}
+
+func TestMainWriteError(t *testing.T) {
+	t.Parallel()
+
+	buf, _ := os.OpenFile("/some/bogus/file.txt", os.O_RDONLY, 0)
+	defer func() { _ = buf.Close() }()
+
+	var mainErr error
+
+	main := &Main{
+		args:    []string{os.Args[0], "1 + 1"},
+		outFile: buf,
+		onError: func(err error) {
+			mainErr = errors.Unwrap(err)
+
+			if mainErr == nil {
+				mainErr = err
+			}
+		},
+		result: 0,
+	}
+
+	main.Run()
+
+	if mainErr == nil {
+		t.Fatalf("expected error, got none")
 	}
 }
 
@@ -122,7 +174,7 @@ func BenchmarkMain(b *testing.B) {
 			args:    []string{os.Args[0], "1 + -2 * 3 / 4"},
 			outFile: io.Discard,
 			onError: func(err error) {
-				b.Errorf("expected no error, got %v", err)
+				b.Errorf("expected no error, got '%s'", err.Error())
 			},
 			result: 0,
 		}
