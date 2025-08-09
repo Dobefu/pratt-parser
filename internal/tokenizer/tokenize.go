@@ -21,8 +21,12 @@ func (t *Tokenizer) Tokenize() ([]*token.Token, error) {
 		}
 
 		switch next {
-		// Whitespace characters.
-		case ' ', '\r', '\t':
+		case ' ', '\t', '\r':
+			continue
+
+		case '\n':
+			tokens = append(tokens, t.tokenPool.GetToken("\n", token.TokenTypeNewline))
+
 			continue
 
 		// Numeric characters.

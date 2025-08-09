@@ -22,6 +22,14 @@ func TestTokenize(t *testing.T) {
 		expected []*token.Token
 	}{
 		{
+			input: "1\n2",
+			expected: []*token.Token{
+				tokenizeTestGetNumberToken("1"),
+				{Atom: "\n", TokenType: token.TokenTypeNewline},
+				tokenizeTestGetNumberToken("2"),
+			},
+		},
+		{
 			input:    "1",
 			expected: []*token.Token{tokenizeTestGetNumberToken("1")},
 		},

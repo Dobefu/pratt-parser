@@ -30,6 +30,7 @@ func NewPool() *Pool {
 		{"(", TokenTypeLParen},
 		{")", TokenTypeRParen},
 		{",", TokenTypeComma},
+		{"\n", TokenTypeNewline},
 	}
 
 	for _, t := range commonTokens {
