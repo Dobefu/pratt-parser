@@ -48,7 +48,7 @@ func TestParse(t *testing.T) {
 				{Atom: ")", TokenType: token.TokenTypeRParen},
 				{Atom: ")", TokenType: token.TokenTypeRParen},
 			},
-			expected: "((1 + (10 / ((5 ** 2) * 5))) - (- (123 % (- 5))))",
+			expected: "((1 + (10 / ((5 ** 2) * 5))) - ((- 123) % (- 5)))",
 		},
 	}
 
@@ -57,13 +57,13 @@ func TestParse(t *testing.T) {
 		result, err := parser.Parse()
 
 		if err != nil {
-			t.Errorf("expected no error, got %v", err)
+			t.Errorf("expected no error, got '%s'", err.Error())
 
 			continue
 		}
 
 		if result.Expr() != test.expected {
-			t.Errorf("expected %v, got %v", test.expected, result)
+			t.Errorf("expected '%s', got '%s'", test.expected, result.Expr())
 		}
 	}
 }

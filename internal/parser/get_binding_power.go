@@ -21,16 +21,23 @@ const (
 // getBindingPower returns the binding power of the current token.
 func (p *Parser) getBindingPower(currentToken *token.Token, isUnary bool) int {
 	switch currentToken.TokenType {
-	case token.TokenTypeLParen, token.TokenTypeRParen:
+	case
+		token.TokenTypeLParen,
+		token.TokenTypeRParen:
 		return bindingPowerParentheses
 
-	case token.TokenTypeOperationPow, token.TokenTypeOperationMod:
+	case
+		token.TokenTypeOperationPow:
 		return bindingPowerPower
 
-	case token.TokenTypeOperationMul, token.TokenTypeOperationDiv:
+	case token.TokenTypeOperationMul,
+		token.TokenTypeOperationDiv,
+		token.TokenTypeOperationMod:
 		return bindingPowerMultiplicative
 
-	case token.TokenTypeOperationAdd, token.TokenTypeOperationSub:
+	case
+		token.TokenTypeOperationAdd,
+		token.TokenTypeOperationSub:
 		if isUnary {
 			return bindingPowerUnary
 		}

@@ -35,7 +35,7 @@ func TestGetBindingPower(t *testing.T) {
 		},
 		{
 			input:    token.NewToken("%", token.TokenTypeOperationMod),
-			expected: bindingPowerPower,
+			expected: bindingPowerMultiplicative,
 		},
 		{
 			input:    token.NewToken("**", token.TokenTypeOperationPow),

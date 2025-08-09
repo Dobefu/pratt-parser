@@ -52,6 +52,10 @@ func TestMainRun(t *testing.T) {
 			input:    "1 + 2 * 3 / 4",
 			expected: 2.5,
 		},
+		{
+			input:    "8 * 5 % 3",
+			expected: 1,
+		},
 	}
 
 	for _, test := range tests {
