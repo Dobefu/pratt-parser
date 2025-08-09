@@ -10,9 +10,9 @@ func TestBinaryExpr(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input       ExprNode
-		expected    string
-		expectedPos int
+		input         ExprNode
+		expectedValue string
+		expectedPos   int
 	}{
 		{
 			input: &BinaryExpr{
@@ -24,8 +24,8 @@ func TestBinaryExpr(t *testing.T) {
 				},
 				Pos: 0,
 			},
-			expected:    "(1 + 1)",
-			expectedPos: 0,
+			expectedValue: "(1 + 1)",
+			expectedPos:   0,
 		},
 		{
 			input: &BinaryExpr{
@@ -37,14 +37,14 @@ func TestBinaryExpr(t *testing.T) {
 				},
 				Pos: 0,
 			},
-			expected:    "(1 * 2)",
-			expectedPos: 0,
+			expectedValue: "(1 * 2)",
+			expectedPos:   0,
 		},
 	}
 
 	for _, test := range tests {
-		if test.input.Expr() != test.expected {
-			t.Errorf("expected '%s', got '%s'", test.expected, test.input.Expr())
+		if test.input.Expr() != test.expectedValue {
+			t.Errorf("expected '%s', got '%s'", test.expectedValue, test.input.Expr())
 		}
 
 		if test.input.Position() != test.expectedPos {
