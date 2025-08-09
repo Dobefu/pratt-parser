@@ -15,7 +15,7 @@ func TestGetBindingPower(t *testing.T) {
 	}{
 		{
 			input:    token.NewToken("1", token.TokenTypeNumber),
-			expected: 1,
+			expected: bindingPowerDefault,
 		},
 		{
 			input:    token.NewToken("+", token.TokenTypeOperationAdd),
