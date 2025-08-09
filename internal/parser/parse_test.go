@@ -24,6 +24,13 @@ func TestParse(t *testing.T) {
 		},
 		{
 			input: []*token.Token{
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "\n", TokenType: token.TokenTypeNewline},
+			},
+			expected: "1",
+		},
+		{
+			input: []*token.Token{
 				{Atom: "(", TokenType: token.TokenTypeLParen},
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 				{Atom: "+", TokenType: token.TokenTypeOperationAdd},
@@ -99,6 +106,13 @@ func TestParseErr(t *testing.T) {
 				{Atom: "1", TokenType: token.TokenTypeNumber},
 			},
 			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, "/"),
+		},
+		{
+			input: []*token.Token{
+				{Atom: "1", TokenType: token.TokenTypeNumber},
+				{Atom: "2", TokenType: token.TokenTypeNumber},
+			},
+			expected: fmt.Sprintf(errorutil.ErrorMsgUnexpectedToken, "2"),
 		},
 	}
 

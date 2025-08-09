@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/Dobefu/pratt-parser/internal/ast"
 	"github.com/Dobefu/pratt-parser/internal/errorutil"
+	"github.com/Dobefu/pratt-parser/internal/token"
 )
 
 // Parse parses the expression string supplied in the struct.
@@ -23,5 +24,35 @@ func (p *Parser) Parse() (ast.ExprNode, error) {
 		return nil, err
 	}
 
+	err = p.checkTrailingTokens()
+
+	if err != nil {
+		return nil, err
+	}
+
 	return ast, nil
+}
+
+func (p *Parser) checkTrailingTokens() error {
+	for !p.isEOF {
+		peek, err := p.PeekNextToken()
+
+		if err != nil {
+			return err
+		}
+
+		if peek.TokenType != token.TokenTypeNewline {
+			return errorutil.NewErrorAt(
+				errorutil.ErrorMsgUnexpectedToken,
+				p.tokenIdx,
+				peek.Atom,
+			)
+		}
+
+		if _, err := p.GetNextToken(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
