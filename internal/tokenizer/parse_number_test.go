@@ -30,6 +30,10 @@ func TestParseNumber(t *testing.T) {
 			expected: []*token.Token{parseNumberTestGetNumberToken("1.1")},
 		},
 		{
+			input:    ".1",
+			expected: []*token.Token{parseNumberTestGetNumberToken(".1")},
+		},
+		{
 			input:    "1e1",
 			expected: []*token.Token{parseNumberTestGetNumberToken("1e1")},
 		},
@@ -90,6 +94,10 @@ func TestParseNumberErr(t *testing.T) {
 		{
 			input:    "1.",
 			expected: fmt.Sprintf(errorutil.ErrorMsgNumberTrailingChar, "1."),
+		},
+		{
+			input:    "1e++",
+			expected: fmt.Sprintf(errorutil.ErrorMsgNumberTrailingChar, "1e++"),
 		},
 	}
 
