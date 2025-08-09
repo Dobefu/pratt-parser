@@ -153,6 +153,10 @@ func TestTokenizeErr(t *testing.T) {
 			input:    "*",
 			expected: errorutil.ErrorMsgUnexpectedEOF,
 		},
+		{
+			input:    "1_e\x80",
+			expected: string(errorutil.ErrorMsgInvalidUTF8Char),
+		},
 	}
 
 	for _, test := range tests {
